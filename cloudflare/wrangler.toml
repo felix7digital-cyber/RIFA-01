@@ -1,1 +1,61 @@
+# ============================================================
+# MOTOR DE RIFAS · cloudflare/wrangler.toml
+# Configuración del Worker + D1 para Cloudflare
+# Marco: CCG-IA v1.0.0 · Autor: Felix
+# ============================================================
+#
+# ⚠️ INSTRUCCIONES:
+# 1) Reemplaza "REEMPLAZA_CON_TU_DATABASE_ID" con tu Database ID real.
+# 2) Cambia "API_TOKEN" por uno largo y aleatorio en producción.
+# 3) Ajusta CORS_ORIGIN a tu dominio una vez desplegado.
+# ============================================================
 
+name = "rifa-worker"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# ============================================================
+# BASE DE DATOS D1
+# ============================================================
+[[d1_databases]]
+binding = "DB"                          # Nombre para acceder desde worker.js
+database_name = "rifa-db"               # Nombre real de la BD
+database_id = "REEMPLAZA_CON_TU_DATABASE_ID"
+
+# ============================================================
+# VARIABLES DE ENTORNO PÚBLICAS
+# ============================================================
+[vars]
+ENVIRONMENT = "production"
+API_TOKEN = "cambia-este-token-por-uno-largo-y-aleatorio"
+CORS_ORIGIN = "*"                       # En producción: "https://tudominio.pages.dev"
+
+# ============================================================
+# CONFIGURACIÓN DE ENTORNO PRODUCTION
+# ============================================================
+[env.production]
+name = "rifa-worker"
+vars = { ENVIRONMENT = "production" }
+
+# ============================================================
+# CONFIGURACIÓN DE ENTORNO STAGING (opcional)
+# ============================================================
+[env.staging]
+name = "rifa-worker-staging"
+vars = { ENVIRONMENT = "staging" }
+
+# ============================================================
+# RUTAS (opcional · si usas dominio propio)
+# ============================================================
+# [env.production.routes]
+# pattern = "rifas.tudominio.com/api/*"
+# zone_name = "tudominio.com"
+
+# ============================================================
+# NOTAS
+# ============================================================
+# - Desplegar: wrangler deploy
+# - Aplicar schema: wrangler d1 execute rifa-db --file=./schema.sql --remote
+# - Desarrollo local: wrangler dev
+# - Sin nodejs_compat a propósito: el Worker no usa APIs de Node.
+# ============================================================
