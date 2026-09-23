@@ -1,1 +1,606 @@
+/* ============================================================
+   MOTOR DE RIFAS · assets/css/plantillas.css
+   4 plantillas visuales que sobrescriben variables de base.css
+   Marco: CCG-IA v1.0.0 · Autor: Felix
+   ============================================================
+   Cómo funciona:
+   - Cada plantilla es un bloque `body.plantilla-XXX { ... }`
+   - Solo sobrescriben variables CSS, no componentes.
+   - theme.js aplica la clase al <body> según la config del admin.
+   - La plantilla `boleto` es el fallback (los valores por defecto
+     de base.css ya la representan; aquí solo se refuerza).
+   ============================================================ */
 
+/* ============================================================
+   1. PLANTILLA · BOLETO (por defecto · oscura + dorada)
+   Inspirada en el "Boleto de la Suerte" (Juana).
+   Esta es la plantilla base del proyecto.
+   ============================================================ */
+body.plantilla-boleto {
+    /* Fondos */
+    --bg:            #0f172a;
+    --surface:       #1e293b;
+    --surface-2:     #131d31;
+    --surface-hover: #273449;
+
+    /* Acento principal · dorado */
+    --accent:        #fbbf24;
+    --accent-glow:   rgba(251, 191, 36, 0.35);
+    --accent-soft:   rgba(251, 191, 36, 0.12);
+    --accent-text:   #000000;
+
+    /* Acento secundario · azul cielo */
+    --sky:           #38bdf8;
+    --sky-glow:      rgba(56, 189, 248, 0.35);
+    --sky-soft:      rgba(56, 189, 248, 0.12);
+
+    /* Estados */
+    --ok:            #34d399;
+    --ok-glow:       rgba(52, 211, 153, 0.35);
+    --ok-soft:       rgba(52, 211, 153, 0.14);
+
+    --warn:          #fbbf24;
+    --warn-glow:     rgba(251, 191, 36, 0.35);
+    --warn-soft:     rgba(251, 191, 36, 0.14);
+
+    --danger:        #f87171;
+    --danger-glow:   rgba(248, 113, 113, 0.30);
+    --danger-soft:   rgba(248, 113, 113, 0.14);
+
+    /* Textos */
+    --text:          #f8fafc;
+    --muted:         #94a3b8;
+    --muted-2:       #64748b;
+
+    /* Bordes */
+    --border:        #334155;
+    --border-soft:   #2a3854;
+
+    /* Estructura visual */
+    --card-border:   1.5px solid var(--accent);
+    --card-shadow:   0 8px 22px -8px rgba(0, 0, 0, 0.5);
+    --glow-strength: 1;
+
+    /* Letras */
+    letter-spacing: 0;
+}
+
+/* Detalles finos de la plantilla boleto */
+body.plantilla-boleto .header-title {
+    letter-spacing: 0.3px;
+}
+body.plantilla-boleto .banner,
+body.plantilla-boleto .welcome-card,
+body.plantilla-boleto .motivo-hero {
+    border-width: 1.5px;
+}
+body.plantilla-boleto .num-btn {
+    font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   2. PLANTILLA · NEON (oscura · fluor · para rifas juveniles)
+   Magenta + cian + negro profundo.
+   ============================================================ */
+body.plantilla-neon {
+    --bg:            #050510;
+    --surface:       #0e0e1f;
+    --surface-2:     #07071a;
+    --surface-hover: #181830;
+
+    --accent:        #ff2d95;
+    --accent-glow:   rgba(255, 45, 149, 0.55);
+    --accent-soft:   rgba(255, 45, 149, 0.14);
+    --accent-text:   #ffffff;
+
+    --sky:           #00f0ff;
+    --sky-glow:      rgba(0, 240, 255, 0.55);
+    --sky-soft:      rgba(0, 240, 255, 0.14);
+
+    --ok:            #00ff9d;
+    --ok-glow:       rgba(0, 255, 157, 0.55);
+    --ok-soft:       rgba(0, 255, 157, 0.14);
+
+    --warn:          #ffcc00;
+    --warn-glow:     rgba(255, 204, 0, 0.55);
+    --warn-soft:     rgba(255, 204, 0, 0.14);
+
+    --danger:        #ff3366;
+    --danger-glow:   rgba(255, 51, 102, 0.55);
+    --danger-soft:   rgba(255, 51, 102, 0.14);
+
+    --text:          #f0f0ff;
+    --muted:         #8a8aa8;
+    --muted-2:       #4f4f6a;
+
+    --border:        #2a2a55;
+    --border-soft:   #1a1a3a;
+
+    --card-border:   1.5px solid var(--accent);
+    --card-shadow:   0 0 24px rgba(255, 45, 149, 0.3), 0 8px 22px -8px rgba(0, 0, 0, 0.8);
+    --glow-strength: 1.6;
+}
+
+/* Detalles finos neon */
+body.plantilla-neon .header-title,
+body.plantilla-neon .banner h1,
+body.plantilla-neon .welcome-card h2,
+body.plantilla-neon .motivo-hero h2,
+body.plantilla-neon .panel-control h3,
+body.plantilla-neon .admin-section h3,
+body.plantilla-neon .modal-title {
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+}
+body.plantilla-neon .header-badge,
+body.plantilla-neon .premio-tag,
+body.plantilla-neon .boleto-estado,
+body.plantilla-neon .reserva-estado {
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+body.plantilla-neon .num-btn {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
+}
+body.plantilla-neon .num-btn.seleccionado {
+    box-shadow: 0 0 20px var(--accent-glow), 0 0 40px var(--accent-glow);
+}
+body.plantilla-neon .btn-accion {
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    font-size: 0.88rem;
+}
+body.plantilla-neon .header-title::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+    animation: neonScan 4s linear infinite;
+    pointer-events: none;
+}
+@keyframes neonScan {
+    0%   { transform: translateX(-100%); opacity: 0; }
+    50%  { opacity: 0.4; }
+    100% { transform: translateX(100%); opacity: 0; }
+}
+
+/* ============================================================
+   3. PLANTILLA · CLASICO (clara · tipo ticket de feria)
+   Cálida, familiar, con bordes gruesos y tipografía serif.
+   ============================================================ */
+body.plantilla-clasico {
+    --bg:            #fef3c7;
+    --surface:       #ffffff;
+    --surface-2:     #fef9e7;
+    --surface-hover: #fdf0c8;
+
+    --accent:        #dc2626;
+    --accent-glow:   rgba(220, 38, 38, 0.30);
+    --accent-soft:   rgba(220, 38, 38, 0.10);
+    --accent-text:   #ffffff;
+
+    --sky:           #1e40af;
+    --sky-glow:      rgba(30, 64, 175, 0.28);
+    --sky-soft:      rgba(30, 64, 175, 0.10);
+
+    --ok:            #15803d;
+    --ok-glow:       rgba(21, 128, 61, 0.28);
+    --ok-soft:       rgba(21, 128, 61, 0.10);
+
+    --warn:          #b45309;
+    --warn-glow:     rgba(180, 83, 9, 0.28);
+    --warn-soft:     rgba(180, 83, 9, 0.10);
+
+    --danger:        #b91c1c;
+    --danger-glow:   rgba(185, 28, 28, 0.28);
+    --danger-soft:   rgba(185, 28, 28, 0.10);
+
+    --text:          #1c1917;
+    --muted:         #78716c;
+    --muted-2:       #a8a29e;
+
+    --border:        #d6d3d1;
+    --border-soft:   #e7e5e4;
+
+    --card-border:   2px solid var(--accent);
+    --card-shadow:   0 6px 14px -4px rgba(120, 80, 0, 0.15);
+    --glow-strength: 0.3;
+
+    --font-heading:  Georgia, "Times New Roman", serif;
+
+    letter-spacing: 0.1px;
+}
+
+/* Detalles finos clásico */
+body.plantilla-clasico .fixed-header {
+    background: rgba(255, 255, 255, 0.98);
+    border-bottom: 2px solid var(--accent);
+}
+body.plantilla-clasico .fixed-bottom {
+    background: rgba(255, 255, 255, 0.98);
+    border-top: 2px solid var(--accent);
+}
+body.plantilla-clasico .header-title {
+    color: var(--accent);
+    text-shadow: none;
+    font-family: var(--font-heading);
+    font-weight: 900;
+}
+body.plantilla-clasico .banner,
+body.plantilla-clasico .welcome-card,
+body.plantilla-clasico .motivo-hero {
+    background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%);
+}
+body.plantilla-clasico .banner h1,
+body.plantilla-clasico .welcome-card h2,
+body.plantilla-clasico .motivo-hero h2 {
+    font-family: var(--font-heading);
+    text-shadow: none;
+    color: var(--accent);
+}
+body.plantilla-clasico .banner p,
+body.plantilla-clasico .welcome-card p,
+body.plantilla-clasico .motivo-hero p {
+    color: #57534e;
+}
+body.plantilla-clasico .btn-accion {
+    font-family: var(--font-heading);
+    letter-spacing: 0.3px;
+    border: 2px solid var(--accent);
+    background: var(--accent);
+    color: var(--accent-text);
+    box-shadow: 0 4px 0 rgba(120, 20, 20, 0.35);
+}
+body.plantilla-clasico .btn-accion:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 rgba(120, 20, 20, 0.35);
+}
+body.plantilla-clasico .num-btn {
+    border-width: 2px;
+    font-family: var(--font-heading);
+    font-weight: 900;
+}
+body.plantilla-clasico .num-tag {
+    background: #fef9e7;
+}
+body.plantilla-clasico .panel-control,
+body.plantilla-clasico .admin-section {
+    border-width: 2px;
+}
+body.plantilla-clasico .input-field,
+body.plantilla-clasico .select-field,
+body.plantilla-clasico textarea.input-field {
+    background: #ffffff;
+    border-width: 1.5px;
+    color: var(--text);
+}
+body.plantilla-clasico .input-field::placeholder { color: #a8a29e; }
+body.plantilla-clasico .input-field[readonly] { background: #f5f5f4; color: var(--accent); }
+body.plantilla-clasico .terms-box {
+    background: #ffffff;
+    color: #44403c;
+    border-width: 2px;
+}
+body.plantilla-clasico .terms-box strong { color: #1c1917; }
+body.plantilla-clasico .modal-sheet {
+    background: #ffffff;
+    border-width: 2px;
+}
+body.plantilla-clasico .info-line {
+    background: #fef9e7;
+    border-color: #e7e5e4;
+}
+body.plantilla-clasico .modal-backdrop {
+    background: rgba(60, 40, 0, 0.55);
+}
+body.plantilla-clasico .toast {
+    background: #ffffff;
+    color: #1c1917;
+}
+body.plantilla-clasico .boleto-card {
+    background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%);
+}
+body.plantilla-clasico .boleto-brand { color: #1e40af; }
+body.plantilla-clasico .boleto-sub   { color: var(--accent); }
+body.plantilla-clasico .boleto-num-box { background: #fef9e7; }
+body.plantilla-clasico .boleto-info    { background: #fef9e7; }
+body.plantilla-clasico .header-badge {
+    background: var(--accent);
+    color: var(--accent-text);
+}
+
+/* ============================================================
+   4. PLANTILLA · MINIMAL (clara · corporativa · limpia)
+   Blanco puro, negro suave, cero decoración.
+   ============================================================ */
+body.plantilla-minimal {
+    --bg:            #ffffff;
+    --surface:       #fafafa;
+    --surface-2:     #f4f4f5;
+    --surface-hover: #f0f0f1;
+
+    --accent:        #111827;
+    --accent-glow:   rgba(17, 24, 39, 0.18);
+    --accent-soft:   rgba(17, 24, 39, 0.05);
+    --accent-text:   #ffffff;
+
+    --sky:           #2563eb;
+    --sky-glow:      rgba(37, 99, 235, 0.18);
+    --sky-soft:      rgba(37, 99, 235, 0.06);
+
+    --ok:            #059669;
+    --ok-glow:       rgba(5, 150, 105, 0.18);
+    --ok-soft:       rgba(5, 150, 105, 0.06);
+
+    --warn:          #d97706;
+    --warn-glow:     rgba(217, 119, 6, 0.18);
+    --warn-soft:     rgba(217, 119, 6, 0.06);
+
+    --danger:        #dc2626;
+    --danger-glow:   rgba(220, 38, 38, 0.18);
+    --danger-soft:   rgba(220, 38, 38, 0.06);
+
+    --text:          #111827;
+    --muted:         #6b7280;
+    --muted-2:       #9ca3af;
+
+    --border:        #e5e7eb;
+    --border-soft:   #f3f4f6;
+
+    --card-border:   1px solid var(--border);
+    --card-shadow:   0 1px 3px rgba(0, 0, 0, 0.04);
+    --glow-strength: 0;
+
+    --radius:        10px;
+    --radius-sm:     6px;
+    --radius-lg:     14px;
+
+    letter-spacing: -0.1px;
+}
+
+/* Detalles finos minimal */
+body.plantilla-minimal .fixed-header {
+    background: rgba(255, 255, 255, 0.98);
+    border-bottom: 1px solid var(--border);
+}
+body.plantilla-minimal .fixed-bottom {
+    background: rgba(255, 255, 255, 0.98);
+    border-top: 1px solid var(--border);
+}
+body.plantilla-minimal .header-title {
+    color: var(--text);
+    text-shadow: none;
+    font-weight: 800;
+}
+body.plantilla-minimal .banner,
+body.plantilla-minimal .welcome-card,
+body.plantilla-minimal .motivo-hero {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: none;
+}
+body.plantilla-minimal .banner::after,
+body.plantilla-minimal .welcome-card::after,
+body.plantilla-minimal .motivo-hero::after {
+    display: none;
+}
+body.plantilla-minimal .banner h1,
+body.plantilla-minimal .welcome-card h2,
+body.plantilla-minimal .motivo-hero h2 {
+    color: var(--text);
+    text-shadow: none;
+    font-weight: 800;
+}
+body.plantilla-minimal .banner p,
+body.plantilla-minimal .welcome-card p,
+body.plantilla-minimal .motivo-hero p {
+    color: var(--muted);
+}
+body.plantilla-minimal .header-badge {
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    font-weight: 700;
+}
+body.plantilla-minimal .header-badge.danger {
+    background: var(--danger);
+    color: #fff;
+    border: none;
+}
+body.plantilla-minimal .header-badge.info {
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+body.plantilla-minimal .progress-bar-fill {
+    background: var(--accent);
+}
+body.plantilla-minimal .btn-accion {
+    background: var(--accent);
+    color: var(--accent-text);
+    box-shadow: none;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+}
+body.plantilla-minimal .btn-accion.btn-blue {
+    background: var(--sky);
+    color: #fff;
+}
+body.plantilla-minimal .btn-accion.btn-ok {
+    background: var(--ok);
+    color: #fff;
+}
+body.plantilla-minimal .btn-accion.btn-danger {
+    background: var(--danger);
+    color: #fff;
+}
+body.plantilla-minimal .btn-accion.btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+body.plantilla-minimal .num-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-weight: 700;
+}
+body.plantilla-minimal .num-btn.seleccionado {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-text);
+    box-shadow: none;
+}
+body.plantilla-minimal .num-btn.pagado {
+    background: var(--ok-soft);
+    border-color: rgba(5, 150, 105, 0.4);
+    color: var(--ok);
+}
+body.plantilla-minimal .num-btn.apartado {
+    background: var(--warn-soft);
+    border-color: rgba(217, 119, 6, 0.4);
+    color: var(--warn);
+}
+body.plantilla-minimal .num-tag {
+    background: var(--surface);
+    border-color: var(--border);
+}
+body.plantilla-minimal .panel-control,
+body.plantilla-minimal .admin-section,
+body.plantilla-minimal .motivo-cta,
+body.plantilla-minimal .premio-card,
+body.plantilla-minimal .menu-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: none;
+}
+body.plantilla-minimal .panel-control h3,
+body.plantilla-minimal .admin-section h3,
+body.plantilla-minimal .motivo-cta h3 {
+    color: var(--text);
+    border-bottom-color: var(--border);
+}
+body.plantilla-minimal .menu-card:hover,
+body.plantilla-minimal .menu-card:active {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+    box-shadow: none;
+    transform: none;
+}
+body.plantilla-minimal .menu-icon {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+}
+body.plantilla-minimal .input-field,
+body.plantilla-minimal .select-field,
+body.plantilla-minimal textarea.input-field {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+body.plantilla-minimal .input-field::placeholder { color: var(--muted-2); }
+body.plantilla-minimal .input-field:focus,
+body.plantilla-minimal .select-field:focus,
+body.plantilla-minimal textarea.input-field:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+body.plantilla-minimal .input-field[readonly] {
+    background: var(--surface-2);
+    color: var(--muted);
+}
+body.plantilla-minimal .terms-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+body.plantilla-minimal .terms-box h1,
+body.plantilla-minimal .terms-box h2,
+body.plantilla-minimal .terms-box h3,
+body.plantilla-minimal .terms-box h4 {
+    color: var(--text);
+}
+body.plantilla-minimal .terms-box strong { color: var(--text); }
+body.plantilla-minimal .terms-box a { color: var(--sky); }
+body.plantilla-minimal .modal-backdrop {
+    background: rgba(17, 24, 39, 0.55);
+}
+body.plantilla-minimal .modal-sheet {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
+}
+body.plantilla-minimal .modal-title { color: var(--text); text-shadow: none; }
+body.plantilla-minimal .modal-grabber { background: var(--border); }
+body.plantilla-minimal .info-line {
+    background: var(--surface);
+    border-color: var(--border);
+}
+body.plantilla-minimal .info-line span:first-child { color: var(--muted); }
+body.plantilla-minimal .toast {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    color: var(--text);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+body.plantilla-minimal .boleto-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+body.plantilla-minimal .boleto-card::before { display: none; }
+body.plantilla-minimal .boleto-brand { color: var(--text); letter-spacing: 0; font-weight: 700; }
+body.plantilla-minimal .boleto-sub   { color: var(--muted); }
+body.plantilla-minimal .boleto-num-box {
+    background: var(--surface);
+    border-color: var(--border);
+}
+body.plantilla-minimal .boleto-num {
+    text-shadow: none;
+    letter-spacing: 2px;
+    color: var(--text);
+}
+body.plantilla-minimal .boleto-info {
+    background: var(--surface);
+    border-color: var(--border);
+}
+body.plantilla-minimal .boleto-estado.pagado {
+    background: var(--ok-soft);
+    color: var(--ok);
+    border-color: rgba(5, 150, 105, 0.3);
+}
+body.plantilla-minimal .boleto-estado.apartado {
+    background: var(--warn-soft);
+    color: var(--warn);
+    border-color: rgba(217, 119, 6, 0.3);
+}
+body.plantilla-minimal .boleto-foot {
+    color: var(--muted);
+    border-top-color: var(--border);
+}
+body.plantilla-minimal .reserva-item {
+    background: var(--surface);
+    border-color: var(--border);
+}
+body.plantilla-minimal .reserva-num {
+    background: var(--surface-2);
+    border-color: var(--border);
+    color: var(--text);
+}
+body.plantilla-minimal .stat-card {
+    background: var(--surface);
+    border-color: var(--border);
+}
+body.plantilla-minimal .stat-card h4 {
+    color: var(--text);
+    text-shadow: none;
+}
+
+/* ============================================================
+   5. FALLBACK · Si no hay clase de plantilla, aplica boleto
+   ============================================================ */
+body:not([class*="plantilla-"]) {
+    /* base.css ya trae los defaults de boleto */
+}
