@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#070a10">
+    <meta name="description" content="Cartel de la rifa · Descarga y comparte por WhatsApp.">
+
+    <title>Cartel · <span data-theme="rifa">Cargando…</span></title>
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%96%BC%EF%B8%8F%3C/text%3E%3C/svg%3E">
+
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/plantillas.css">
+
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+        defer
+    ></script>
+</head>
+<body data-page="cartel">
+
+    <header class="fixed-header">
+        <div class="header-brand">
+            <div class="header-logo" data-theme="logo">🖼️</div>
+            <div class="header-title">Cartel de la Rifa</div>
+        </div>
+        <span class="header-badge info">Descargable</span>
+    </header>
+
+    <div class="progress-bar-container">
+        <div class="progress-bar-fill" style="width: 75%;"></div>
+    </div>
+
+    <main class="main-container cartel-container">
+
+        <!-- ============================================================
+             FLYER · Lo que se descarga como PNG
+             ============================================================ -->
+        <div class="cartel-flyer" id="cartel-flyer">
+
+            <!-- Cabecera -->
+            <header class="cf-head">
+                <div class="cf-head-left">
+                    <h1 class="cf-titulo" id="cf-titulo" data-theme="rifa">Cargando…</h1>
+                    <p class="cf-sub" id="cf-sub">Cargando…</p>
+                </div>
+                <div class="cf-precio">
+                    <span class="cf-precio-monto" id="cf-precio" data-theme="monto">$5</span>
+                    <span class="cf-precio-tag">c/u</span>
+                    <span class="cf-precio-bs" id="cf-precio-bs"></span>
+                </div>
+            </header>
+
+            <!-- Premios -->
+            <section class="cf-premios" id="cf-premios">
+                <!-- Se llena desde JS -->
+            </section>
+
+            <!-- Grilla 00-99 -->
+            <div class="cf-grid" id="cf-grid" role="img" aria-label="Grilla de 100 números con su estado">
+                <!-- Se llena desde JS -->
+            </div>
+
+            <!-- Leyenda -->
+            <div class="cf-leyenda">
+                <span class="cf-leyenda-item">
+                    <span class="cf-dot libre"></span>Disponible
+                </span>
+                <span class="cf-leyenda-item">
+                    <span class="cf-dot apartado"></span>Apartado
+                </span>
+                <span class="cf-leyenda-item">
+                    <span class="cf-dot pagado"></span>Pagado
+                </span>
+            </div>
+
+            <!-- Pie -->
+            <footer class="cf-pie">
+                <div class="cf-fila">
+                    <span class="cf-etq">Responsable</span>
+                    <span class="cf-val" id="cf-responsable" data-theme="organizador">—</span>
+                </div>
+                <div class="cf-fila">
+                    <span class="cf-etq">📲 WhatsApp</span>
+                    <span class="cf-val" id="cf-whatsapp">—</span>
+                </div>
+                <div class="cf-fila" id="cf-fila-pago">
+                    <span class="cf-etq">💳 Pago Móvil</span>
+                    <span class="cf-val cf-val-cian" id="cf-pago">—</span>
+                </div>
+                <div class="cf-fila" id="cf-fila-sorteo">
+                    <span class="cf-etq">🎲 Sorteo</span>
+                    <span class="cf-val" id="cf-sorteo">—</span>
+                </div>
+                <div class="cf-fila" id="cf-fila-bcv">
+                    <span class="cf-etq">💱 Tasa BCV</span>
+                    <span class="cf-val cf-val-cian" id="cf-bcv">Cargando…</span>
+                </div>
+            </footer>
+
+        </div>
+
+        <!-- ============================================================
+             CONTADOR
+             ============================================================ -->
+        <div class="cartel-stats">
+            <div class="cartel-stat verde">
+                <span class="cartel-stat-num" id="cf-n-libres">100</span>
+                <span class="cartel-stat-lbl">Disponibles</span>
+            </div>
+            <div class="cartel-stat ambar">
+                <span class="cartel-stat-num" id="cf-n-apartados">0</span>
+                <span class="cartel-stat-lbl">Apartados</span>
+            </div>
+            <div class="cartel-stat rojo">
+                <span class="cartel-stat-num" id="cf-n-pagados">0</span>
+                <span class="cartel-stat-lbl">Pagados</span>
+            </div>
+        </div>
+
+        <!-- ============================================================
+             ACCIONES
+             ============================================================ -->
+        <div class="cartel-acciones">
+            <button type="button" class="btn-accion" id="cf-btn-descargar">
+                📥 Descargar PNG
+            </button>
+            <button type="button" class="btn-accion btn-ok hidden" id="cf-btn-compartir">
+                📤 Compartir
+            </button>
+            <button type="button" class="btn-accion btn-blue" id="cf-btn-actualizar">
+                🔄 Actualizar datos
+            </button>
+        </div>
+
+        <section class="admin-section">
+            <h3>💡 ¿Cómo funciona?</h3>
+            <p class="admin-hint">
+                Este cartel se genera automáticamente con los datos reales:
+                números vendidos, apartados, tasa BCV y tus datos de contacto.
+                Al actualizar los registros desde el admin, pulsa
+                <strong>"🔄 Actualizar datos"</strong> para refrescar.
+            </p>
+            <p class="admin-hint" style="margin-top: 6px;">
+                Puedes descargar el PNG y enviarlo por WhatsApp, o usar
+                <strong>"📤 Compartir"</strong> para abrirlo directamente en
+                tus apps.
+            </p>
+        </section>
+
+    </main>
+
+    <nav class="fixed-bottom" aria-label="Navegación principal">
+        <a href="index.html" class="nav-item">
+            <span>🏠</span><span>Inicio</span>
+        </a>
+        <a href="rifas.html" class="nav-item">
+            <span>🎟️</span><span>Rifas</span>
+        </a>
+        <a href="premios.html" class="nav-item">
+            <span>🏆</span><span>Premios</span>
+        </a>
+        <a href="admin.html" class="nav-item">
+            <span>⚙️</span><span>Admin</span>
+        </a>
+    </nav>
+
+    <!-- ============================================================
+         SCRIPTS · bcv.js ANTES del script inline
+         ============================================================ -->
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/storage.js"></script>
+    <script src="assets/js/theme.js"></script>
+    <script src="assets/js/bcv.js"></script>
+
+    <script>
+    (function () {
+        'use strict';
+
+        var U     = window.UI;
+        var Store = window.Store;
+        var Theme = window.Theme;
+        var BCV   = window.BCV;
+
+        var TOTAL = 100;
+
+        var state = {
+            registros:  [],
+            porNumero:  new Map(),
+            bcvInfo:    null,
+            bcvUnsub:   null,
+            listo:      false
+        };
+
+        var el = {};
+
+        function cachearElementos() {
+            el.flyer         = U.$('#cartel-flyer');
+            el.titulo        = U.$('#cf-titulo');
+            el.sub           = U.$('#cf-sub');
+            el.precio        = U.$('#cf-precio');
+            el.precioBs      = U.$('#cf-precio-bs');
+            el.premios       = U.$('#cf-premios');
+            el.grid          = U.$('#cf-grid');
+            el.responsable   = U.$('#cf-responsable');
+            el.whatsapp      = U.$('#cf-whatsapp');
+            el.pago          = U.$('#cf-pago');
+            el.filaPago      = U.$('#cf-fila-pago');
+            el.sorteo        = U.$('#cf-sorteo');
+            el.filaSorteo    = U.$('#cf-fila-sorteo');
+            el.filaBcv       = U.$('#cf-fila-bcv');
+            el.bcvTexto      = U.$('#cf-bcv');
+
+            el.nLibres       = U.$('#cf-n-libres');
+            el.nApartados    = U.$('#cf-n-apartados');
+            el.nPagados      = U.$('#cf-n-pagados');
+
+            el.btnDescargar  = U.$('#cf-btn-descargar');
+            el.btnCompartir  = U.$('#cf-btn-compartir');
+            el.btnActualizar = U.$('#cf-btn-actualizar');
+        }
+
+        /* ============================================================
+           CARGA DE DATOS
+           ============================================================ */
+        function cargarDatos() {
+            return Store.cargarRegistros(true).then(function (registros) {
+                state.registros = registros || [];
+                state.porNumero = Store.mapaPorNumero(state.registros);
+
+                renderTodo();
+                state.listo = true;
+                return true;
+            }).catch(function (err) {
+                U.warn('Error cargando registros:', err);
+                return false;
+            });
+        }
+
+        function renderTodo() {
+            aplicarConfig();
+            renderPremios();
+            renderGrilla();
+            actualizarStats();
+            actualizarBotonCompartir();
+            cargarBCV();
+        }
+
+        /* ============================================================
+           APLICAR CONFIG
+           ============================================================ */
+        function aplicarConfig() {
+            var cfg = Store.leerConfig();
+            var ident = cfg.identidad || {};
+
+            if (el.titulo) {
+                el.titulo.textContent = ident.nombreRifa || 'Gran Rifa';
+            }
+
+            if (el.sub) {
+                var partes = [];
+                if (ident.nombreOrg) {
+                    partes.push('❤️ A beneficio de ' + ident.nombreOrg + ' ❤️');
+                } else {
+                    partes.push('🎟️ Gran Sorteo Familiar');
+                }
+                el.sub.textContent = partes.join(' · ');
+            }
+
+            if (el.precio) {
+                el.precio.textContent = ident.monto || '$5';
+            }
+
+            if (el.responsable) {
+                el.responsable.textContent = ident.nombreOrg || 'Organizador';
+            }
+
+            if (el.whatsapp) {
+                var tel = ident.whatsappOrg || '';
+                el.whatsapp.textContent = Theme.formatearTelefonoVzla(tel) || 'No configurado';
+            }
+
+            // Pago móvil
+            var pm = ident.pagoMovil || {};
+            var pmTexto = '';
+            if (pm.banco) pmTexto += pm.banco;
+            if (pm.telefono) pmTexto += (pmTexto ? ' · ' : '') + pm.telefono;
+            if (pm.cedula) pmTexto += (pmTexto ? ' · ' : '') + pm.cedula;
+            if (pm.titular) pmTexto += (pmTexto ? ' · ' : '') + pm.titular;
+
+            if (pmTexto && el.pago && el.filaPago) {
+                el.pago.textContent = pmTexto;
+                el.filaPago.style.display = 'flex';
+            } else if (el.filaPago) {
+                el.filaPago.style.display = 'none';
+            }
+
+            // Sorteo
+            var fecha = ident.fechaSorteo || '';
+            var hora = ident.horaSorteo || '';
+            var loteria = ident.loteria || '';
+
+            var texto = '';
+            if (loteria) texto += loteria;
+            if (hora)    texto += (texto ? ' · ' : '') + hora;
+            if (fecha)   texto += (texto ? ' · ' : '') + U.fechaCorta(fecha);
+
+            if (texto && el.sorteo && el.filaSorteo) {
+                el.sorteo.textContent = texto;
+                el.filaSorteo.style.display = 'flex';
+            } else if (el.filaSorteo) {
+                el.filaSorteo.style.display = 'none';
+            }
+        }
+
+        /* ============================================================
+           BCV · Tasa del dólar
+           ============================================================ */
+        function cargarBCV() {
+            if (!BCV) {
+                if (el.filaBcv) el.filaBcv.style.display = 'none';
+                if (el.precioBs) el.precioBs.textContent = '';
+                return;
+            }
+
+            // Mostrar caché inmediatamente si existe
+            var cached = BCV.getCached();
+            if (cached && cached.rate) {
+                state.bcvInfo = cached;
+                renderBCV();
+            }
+
+            // Consultar (o usar la caché fresca)
+            BCV.getRate().then(function (info) {
+                state.bcvInfo = info;
+                renderBCV();
+            }).catch(function () {
+                renderBCV();
+            });
+
+            // Suscribirse a cambios futuros
+            if (!state.bcvUnsub && BCV.suscribir) {
+                state.bcvUnsub = BCV.suscribir(function (info) {
+                    state.bcvInfo = info;
+                    renderBCV();
+                });
+            }
+        }
+
+        function renderBCV() {
+            if (!state.bcvInfo || !state.bcvInfo.rate) {
+                if (el.bcvTexto) el.bcvTexto.textContent = 'No disponible';
+                if (el.precioBs) el.precioBs.textContent = '';
+                return;
+            }
+
+            var info = state.bcvInfo;
+            var tasa = info.rate;
+
+            // --- Mostrar tasa en el pie ---
+            if (el.bcvTexto) {
+                var fuente = info.manual ? 'manual' : (info.source || '');
+                var texto = BCV.formatearTasa(tasa);
+                if (fuente) texto += ' · ' + fuente;
+                el.bcvTexto.textContent = texto;
+            }
+
+            // --- Mostrar equivalente en Bs debajo del precio ---
+            if (el.precioBs) {
+                var cfg = Store.leerConfig();
+                var montoStr = (cfg.identidad && cfg.identidad.monto) || '$5';
+                var limpio = String(montoStr).replace(/[^0-9.,]/g, '').replace(',', '.');
+                var montoUSD = parseFloat(limpio) || 0;
+
+                if (montoUSD > 0) {
+                    var montoBs = BCV.usdABS(montoUSD, tasa);
+                    if (montoBs) {
+                        el.precioBs.textContent = '≈ ' + montoBs.toLocaleString('es-VE', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }) + ' Bs';
+                    } else {
+                        el.precioBs.textContent = '';
+                    }
+                } else {
+                    el.precioBs.textContent = '';
+                }
+            }
+        }
+
+        /* ============================================================
+           PREMIOS
+           ============================================================ */
+        function renderPremios() {
+            if (!el.premios) return;
+
+            var cfg = Store.leerConfig();
+            var premios = (cfg.premios || []).slice().sort(function (a, b) {
+                return (a.puesto || 99) - (b.puesto || 99);
+            }).slice(0, 3);
+
+            if (premios.length === 0) {
+                el.premios.innerHTML = '';
+                el.premios.style.display = 'none';
+                return;
+            }
+
+            el.premios.style.display = 'flex';
+
+            var medallas = { 1: '🥇', 2: '🥈', 3: '🥉' };
+
+            el.premios.innerHTML = premios.map(function (p) {
+                var icono = medallas[p.puesto] || '🏆';
+                var puesto = p.puesto === 1 ? 'Premio principal' :
+                             (p.puesto === 2 ? 'Segundo premio' :
+                             (p.puesto === 3 ? 'Tercer premio' : 'Premio ' + p.puesto));
+
+                return [
+                    '<div class="cf-premio">',
+                        '<span class="cf-premio-icon">' + icono + '</span>',
+                        '<div class="cf-premio-info">',
+                            '<span class="cf-premio-lbl">' + U.escapeHtml(puesto) + '</span>',
+                            '<span class="cf-premio-val">' +
+                                U.escapeHtml(p.titulo || 'Premio') +
+                            '</span>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+            }).join('');
+        }
+
+        /* ============================================================
+           GRILLA 00-99
+           ============================================================ */
+        function renderGrilla() {
+            if (!el.grid) return;
+
+            var html = [];
+
+            for (var i = 0; i < TOTAL; i++) {
+                var num = U.pad2(i);
+                var reg = state.porNumero.get(num);
+
+                var clase = 'cf-celda';
+                if (reg) {
+                    clase += (reg.estado === 'pagado' ? ' cf-pagado' : ' cf-apartado');
+                }
+
+                html.push('<div class="' + clase + '">' + num + '</div>');
+            }
+
+            el.grid.innerHTML = html.join('');
+        }
+
+        /* ============================================================
+           STATS
+           ============================================================ */
+        function actualizarStats() {
+            var ocupados = state.registros.length;
+            var pagados  = state.registros.filter(function (r) { return r.estado === 'pagado'; }).length;
+            var apartados = ocupados - pagados;
+
+            if (el.nLibres)    el.nLibres.textContent    = TOTAL - ocupados;
+            if (el.nApartados) el.nApartados.textContent = apartados;
+            if (el.nPagados)   el.nPagados.textContent   = pagados;
+        }
+
+        /* ============================================================
+           BOTÓN COMPARTIR
+           ============================================================ */
+        function actualizarBotonCompartir() {
+            if (!el.btnCompartir) return;
+            if (navigator.share && navigator.canShare) {
+                el.btnCompartir.classList.remove('hidden');
+            } else {
+                el.btnCompartir.classList.add('hidden');
+            }
+        }
+
+        /* ============================================================
+           GENERAR CANVAS
+           ============================================================ */
+        function generarCanvas() {
+            if (typeof html2canvas === 'undefined') {
+                return Promise.reject(new Error('html2canvas no disponible'));
+            }
+
+            return new Promise(function (resolve, reject) {
+                var ejecutar = function () {
+                    html2canvas(el.flyer, {
+                        scale: 3,
+                        useCORS: true,
+                        backgroundColor: '#070a10',
+                        logging: false
+                    }).then(resolve, reject);
+                };
+
+                if (document.fonts && document.fonts.ready) {
+                    document.fonts.ready.then(ejecutar).catch(ejecutar);
+                } else {
+                    ejecutar();
+                }
+            });
+        }
+
+        function nombreArchivo() {
+            var cfg = Store.leerConfig();
+            var nombre = ((cfg.identidad && cfg.identidad.nombreRifa) || 'Rifa')
+                .replace(/[^\w\-]+/g, '_').slice(0, 30);
+            var fecha = new Date().toISOString().slice(0, 10);
+            return 'cartel_' + nombre + '_' + fecha + '.png';
+        }
+
+        /* ============================================================
+           DESCARGAR PNG
+           ============================================================ */
+        function descargarPNG() {
+            var btn = el.btnDescargar;
+            var original = btn ? btn.textContent : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = '⏳ Generando…';
+            }
+
+            generarCanvas().then(function (canvas) {
+                var url = canvas.toDataURL('image/png');
+                var a = document.createElement('a');
+                a.download = nombreArchivo();
+                a.href = url;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                U.toast('✅ Cartel descargado', 'ok');
+            }).catch(function (err) {
+                U.warn('Error generando cartel:', err);
+                U.toast('No se pudo generar la imagen.', 'danger');
+            }).then(function () {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = original;
+                }
+            });
+        }
+
+        /* ============================================================
+           COMPARTIR
+           ============================================================ */
+        function compartirCartel() {
+            var btn = el.btnCompartir;
+            var original = btn ? btn.textContent : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = '⏳ Preparando…';
+            }
+
+            generarCanvas().then(function (canvas) {
+                return new Promise(function (resolve) {
+                    canvas.toBlob(function (blob) {
+                        if (!blob) { resolve(null); return; }
+                        var file = new File([blob], nombreArchivo(), { type: 'image/png' });
+
+                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                            navigator.share({
+                                files: [file],
+                                title: 'Cartel de la Rifa',
+                                text: '🎟️ ¡Participa en nuestra rifa!'
+                            }).then(function () { resolve('ok'); })
+                              .catch(function (err) {
+                                  if (err && err.name === 'AbortError') {
+                                      resolve('cancel');
+                                      return;
+                                  }
+                                  resolve('error');
+                              });
+                        } else {
+                            var url = URL.createObjectURL(blob);
+                            var a = document.createElement('a');
+                            a.download = file.name;
+                            a.href = url;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            setTimeout(function () { URL.revokeObjectURL(url); }, 3000);
+                            resolve('download');
+                        }
+                    }, 'image/png');
+                });
+            }).then(function (resultado) {
+                if (resultado === 'ok') {
+                    U.toast('✅ Compartido', 'ok');
+                } else if (resultado === 'download') {
+                    U.toast('📥 Descargado (sin compartir nativo)', 'info');
+                } else if (resultado === 'error') {
+                    U.toast('No se pudo compartir. Usa Descargar.', 'warn');
+                }
+            }).catch(function (err) {
+                U.warn('Error compartiendo:', err);
+                U.toast('No se pudo compartir.', 'danger');
+            }).then(function () {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = original;
+                }
+            });
+        }
+
+        /* ============================================================
+           INIT
+           ============================================================ */
+        function init() {
+            cachearElementos();
+
+            try {
+                document.title = 'Cartel · ' + Theme.nombreRifa();
+            } catch (e) { /* silent */ }
+
+            if (el.btnDescargar) el.btnDescargar.addEventListener('click', descargarPNG);
+            if (el.btnCompartir) el.btnCompartir.addEventListener('click', compartirCartel);
+            if (el.btnActualizar) {
+                el.btnActualizar.addEventListener('click', function () {
+                    U.toast('Recargando datos…', 'info', 1200);
+                    cargarDatos();
+                });
+            }
+
+            cargarDatos();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+    })();
+    </script>
+
+    <!-- ============================================================
+         ESTILOS DEL CARTEL
+         ============================================================ -->
+    <style>
+        /* ---------- Contenedor ---------- */
+        .cartel-container {
+            padding-bottom: 40px;
+        }
+
+        /* ============================================================
+           FLYER
+           ============================================================ */
+        .cartel-flyer {
+            position: relative;
+            width: 100%;
+            max-width: 440px;
+            margin: 0 auto;
+            background:
+                radial-gradient(circle at 12% -5%, rgba(251, 191, 36, 0.18), transparent 45%),
+                radial-gradient(circle at 105% 105%, rgba(56, 189, 248, 0.16), transparent 45%),
+                linear-gradient(160deg, #1c1035 0%, #10152a 52%, #080f1c 100%);
+            border: 3px solid var(--accent);
+            border-radius: 22px;
+            padding: 14px 12px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow: hidden;
+            box-shadow:
+                0 20px 44px rgba(0, 0, 0, 0.78),
+                0 0 30px var(--accent-glow);
+            color: #fff;
+            font-family: var(--font-family, system-ui, sans-serif);
+        }
+
+        /* ---------- CABECERA ---------- */
+        .cf-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px dashed rgba(251, 191, 36, 0.38);
+        }
+
+        .cf-head-left {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .cf-titulo {
+            font-size: clamp(1.3rem, 6.5vw, 1.7rem);
+            font-weight: 900;
+            line-height: 0.95;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #ffd633;
+            text-shadow: 0 2px 0 rgba(120, 60, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.7);
+            margin: 0;
+            word-break: break-word;
+        }
+
+        .cf-sub {
+            margin-top: 4px;
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            color: #ff6b8a;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+            line-height: 1.2;
+        }
+
+        .cf-precio {
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 7px 12px;
+            border-radius: 12px;
+            background: linear-gradient(150deg, #ffe066 0%, #ffb300 55%, #ff8a00 100%);
+            color: #1a0f00;
+            font-weight: 900;
+            line-height: 1;
+            box-shadow:
+                0 6px 16px rgba(255, 168, 0, 0.45),
+                0 2px 0 rgba(255, 255, 255, 0.55) inset,
+                0 -3px 0 rgba(140, 60, 0, 0.22) inset;
+            min-width: 90px;
+        }
+
+        .cf-precio-monto {
+            font-size: 1.3rem;
+            letter-spacing: -0.5px;
+        }
+        .cf-precio-tag {
+            font-size: 0.45rem;
+            letter-spacing: 1.2px;
+            margin-top: 2px;
+            opacity: 0.75;
+            text-transform: uppercase;
+        }
+
+        /* NUEVO: precio en Bs debajo del monto principal */
+        .cf-precio-bs {
+            font-size: 0.52rem;
+            margin-top: 3px;
+            letter-spacing: 0.2px;
+            opacity: 0.85;
+            font-weight: 800;
+            min-height: 10px;
+            line-height: 1;
+        }
+
+        /* ---------- PREMIOS ---------- */
+        .cf-premios {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 8px 10px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.055);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #38bdf8;
+            box-shadow: 0 0 18px rgba(56, 189, 248, 0.12) inset;
+        }
+
+        .cf-premio {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.72rem;
+            line-height: 1.2;
+        }
+
+        .cf-premio-icon {
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+
+        .cf-premio-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .cf-premio-lbl {
+            font-size: 0.52rem;
+            font-weight: 800;
+            letter-spacing: 0.9px;
+            text-transform: uppercase;
+            color: #7fd8ff;
+        }
+
+        .cf-premio-val {
+            font-size: 0.76rem;
+            font-weight: 800;
+            color: #f2f7ff;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ---------- GRILLA ---------- */
+        .cf-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 3px;
+            padding: 6px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 22px rgba(0, 0, 0, 0.6) inset;
+        }
+
+        .cf-celda {
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(7px, 2.35vw, 10px);
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.2px;
+            color: #eaf6ff;
+            background: linear-gradient(150deg, #0a84ff 0%, #0a3ea8 100%);
+            border-radius: 4px;
+            box-shadow:
+                0 2px 4px rgba(0, 0, 0, 0.4),
+                0 1px 0 rgba(255, 255, 255, 0.25) inset;
+        }
+
+        .cf-celda.cf-apartado {
+            background: linear-gradient(150deg, #ffb300 0%, #b45309 100%);
+            color: #1a0f00;
+            box-shadow:
+                0 2px 4px rgba(0, 0, 0, 0.4),
+                0 0 6px rgba(251, 191, 36, 0.4) inset;
+        }
+
+        .cf-celda.cf-pagado {
+            background: linear-gradient(150deg, #34d399 0%, #047857 100%);
+            color: #001a11;
+            box-shadow:
+                0 2px 4px rgba(0, 0, 0, 0.4),
+                0 0 6px rgba(52, 211, 153, 0.4) inset;
+        }
+
+        /* ---------- LEYENDA ---------- */
+        .cf-leyenda {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 0.6rem;
+            color: #94a3b8;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .cf-leyenda-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .cf-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+        .cf-dot.libre {
+            background: linear-gradient(150deg, #0a84ff 0%, #0a3ea8 100%);
+        }
+        .cf-dot.apartado {
+            background: linear-gradient(150deg, #ffb300 0%, #b45309 100%);
+        }
+        .cf-dot.pagado {
+            background: linear-gradient(150deg, #34d399 0%, #047857 100%);
+        }
+
+        /* ---------- PIE ---------- */
+        .cf-pie {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 8px 10px;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.72));
+            border: 1px solid rgba(251, 191, 36, 0.28);
+        }
+
+        .cf-fila {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 0.68rem;
+            line-height: 1.25;
+        }
+
+        .cf-fila + .cf-fila {
+            padding-top: 4px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.14);
+        }
+
+        .cf-etq {
+            flex: 0 0 auto;
+            font-size: 0.52rem;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: #8ba2ba;
+        }
+
+        .cf-val {
+            font-weight: 800;
+            color: #ffffff;
+            text-align: right;
+            word-break: break-word;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .cf-val-cian {
+            color: #4fe3ff;
+        }
+
+        /* ============================================================
+           STATS
+           ============================================================ */
+        .cartel-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .cartel-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 10px 6px;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+        }
+
+        .cartel-stat.verde   { border-color: rgba(52, 211, 153, 0.4); }
+        .cartel-stat.ambar   { border-color: rgba(251, 191, 36, 0.4); }
+        .cartel-stat.rojo    { border-color: rgba(248, 113, 113, 0.4); }
+
+        .cartel-stat-num {
+            font-size: 1.35rem;
+            font-weight: 900;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+        .cartel-stat.verde .cartel-stat-num { color: #34d399; }
+        .cartel-stat.ambar .cartel-stat-num { color: #fbbf24; }
+        .cartel-stat.rojo  .cartel-stat-num { color: #f87171; }
+
+        .cartel-stat-lbl {
+            font-size: 0.6rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 800;
+        }
+
+        /* ============================================================
+           ACCIONES
+           ============================================================ */
+        .cartel-acciones {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        /* ============================================================
+           ADAPTACIONES POR PLANTILLA
+           ============================================================ */
+        body.plantilla-clasico .cartel-flyer {
+            background:
+                radial-gradient(circle at 12% -5%, rgba(220, 38, 38, 0.15), transparent 45%),
+                linear-gradient(160deg, #ffffff 0%, #fef3c7 100%);
+            border-color: var(--accent);
+            color: #1c1917;
+        }
+        body.plantilla-clasico .cf-titulo { color: var(--accent); text-shadow: none; }
+        body.plantilla-clasico .cf-sub    { color: var(--accent); }
+        body.plantilla-clasico .cf-premios { background: #fef9e7; }
+        body.plantilla-clasico .cf-pie { background: #ffffff; }
+        body.plantilla-clasico .cf-val { color: #1c1917; }
+        body.plantilla-clasico .cf-etq { color: #78716c; }
+        body.plantilla-clasico .cf-leyenda { color: #57534e; }
+
+        body.plantilla-minimal .cartel-flyer {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            color: #111827;
+        }
+        body.plantilla-minimal .cf-titulo {
+            color: var(--text);
+            text-shadow: none;
+        }
+        body.plantilla-minimal .cf-sub { color: var(--muted); }
+        body.plantilla-minimal .cf-premios {
+            background: var(--surface);
+            border-left-color: var(--accent);
+            border-color: var(--border);
+        }
+        body.plantilla-minimal .cf-pie {
+            background: var(--surface);
+            border-color: var(--border);
+        }
+        body.plantilla-minimal .cf-val { color: var(--text); }
+        body.plantilla-minimal .cf-leyenda { color: var(--muted); }
+
+        body.plantilla-neon .cartel-flyer {
+            background:
+                radial-gradient(circle at 12% -5%, rgba(255, 45, 149, 0.25), transparent 45%),
+                radial-gradient(circle at 105% 105%, rgba(0, 240, 255, 0.25), transparent 45%),
+                linear-gradient(160deg, #0a0a1f 0%, #050510 100%);
+            box-shadow:
+                0 20px 44px rgba(0, 0, 0, 0.78),
+                0 0 40px var(--accent-glow);
+        }
+        body.plantilla-neon .cf-titulo {
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            animation: neonPulse 3s ease-in-out infinite;
+        }
+        @keyframes neonPulse {
+            0%, 100% { text-shadow: 0 0 18px var(--accent-glow); }
+            50%      { text-shadow: 0 0 32px var(--accent-glow), 0 0 60px var(--accent-glow); }
+        }
+    </style>
+
+</body>
+</html>

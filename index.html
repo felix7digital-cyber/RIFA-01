@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#fbbf24">
+    <meta name="description" content="Rifa Familiar Pro Abuela · Una bendición que merece lo mejor.">
+
+    <title>Rifa Familiar Pro Abuela</title>
+
+    <link rel="manifest" href="pwa/manifest.json">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%9F%EF%B8%8F%3C/text%3E%3C/svg%3E">
+
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/plantillas.css">
+</head>
+<body data-page="index">
+
+    <header class="fixed-header">
+        <div class="header-brand">
+            <div class="header-logo" data-theme="logo">🎟️</div>
+            <div class="header-title" data-theme="rifa">Rifa Familiar Pro Abuela</div>
+        </div>
+        <span class="header-badge ok">Activa</span>
+    </header>
+
+    <div class="progress-bar-container">
+        <div class="progress-bar-fill" style="width: 20%;"></div>
+    </div>
+
+    <main class="landing-main">
+
+        <section class="landing-hero" id="inicio">
+            <div class="landing-hero-glow"></div>
+
+            <div class="landing-hero-content">
+
+                <!-- Imagen circular tipo perfil (emoji o foto) -->
+                <div class="landing-image" data-theme="landing-imagen">
+                    <span class="landing-image-emoji">🎟️</span>
+                </div>
+
+                <h1 class="landing-title" data-theme="landing-titulo">
+                    Una Bendición que Merece lo Mejor
+                </h1>
+
+                <p class="landing-sub" data-theme="landing-subtitulo">
+                    Tener a nuestra abuela con nosotros es un regalo incalculable.
+                    Hoy nos unimos para regalarle un motivo gigante de alegría.
+                </p>
+
+                <a href="rifas.html" class="landing-cta" data-theme="landing-cta-principal">
+                    🎟️ Quiero jugar un número
+                </a>
+
+                <a href="motivo.html" class="landing-cta-secundario" data-theme="landing-cta-secundario">
+                    📖 Leer el motivo
+                </a>
+
+            </div>
+
+            <footer class="landing-footer">
+                <p class="landing-firma">
+                    Con todo el corazón 💛
+                </p>
+                <p class="landing-firma-sub" data-theme="rifa">
+                    Rifa Familiar Pro Abuela
+                </p>
+                <a href="admin.html"
+                   class="admin-hidden-btn"
+                   aria-label="Acceso restringido"
+                   title=""
+                   rel="nofollow">⚙️</a>
+            </footer>
+        </section>
+
+    </main>
+
+    <nav class="fixed-bottom" aria-label="Navegación principal">
+
+        <a href="index.html" class="nav-item active">
+            <span>🏠</span>
+            <span>Inicio</span>
+        </a>
+
+        <a href="premios.html" class="nav-item">
+            <span>🏆</span>
+            <span>Premios</span>
+        </a>
+
+        <a href="rifas.html" class="nav-item destacado">
+            <span class="nav-icono-destacado">🎟️</span>
+            <span class="nav-texto-destacado">Jugar</span>
+        </a>
+
+        <a href="boleto.html" class="nav-item">
+            <span>🔎</span>
+            <span>Boleto</span>
+        </a>
+
+    </nav>
+
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/storage.js"></script>
+    <script src="assets/js/theme.js"></script>
+
+    <script>
+    (function () {
+        'use strict';
+
+        function init() {
+            try {
+                if (window.Theme && Theme.nombreRifa) {
+                    var nombre = Theme.nombreRifa();
+                    if (nombre) document.title = nombre;
+                }
+            } catch (e) { /* silent */ }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
+    </script>
+
+    <style>
+        /* ---------- MAIN ---------- */
+        .landing-main {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ============================================================
+           HERO · 100% de pantalla entre header y nav
+           ============================================================ */
+        .landing-hero {
+            position: relative;
+            width: 100%;
+            min-height: calc(100vh - var(--header-height) - var(--bottom-height) - 20px);
+            min-height: calc(100dvh - var(--header-height) - var(--bottom-height) - 20px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 24px 20px 20px;
+            background: linear-gradient(160deg, var(--surface) 0%, var(--surface-2) 100%);
+            overflow: hidden;
+        }
+
+        .landing-hero-glow {
+            position: absolute;
+            top: -40%;
+            right: -40%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 65%);
+            pointer-events: none;
+            opacity: var(--glow-strength, 1);
+        }
+
+        .landing-hero-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 14px;
+            max-width: 400px;
+            width: 100%;
+            flex: 1;
+            justify-content: center;
+        }
+
+        /* ============================================================
+           IMAGEN CIRCULAR TIPO PERFIL
+           Acepta emoji (por defecto) o foto de perfil (upload).
+           La foto se recorta automáticamente en círculo con
+           object-fit: cover, sin importar si es cuadrada o rectangular.
+           ============================================================ */
+        .landing-image {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;                     /* 🆕 circular */
+            background: var(--accent-soft);
+            border: 3px solid var(--accent);        /* borde más grueso */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow:
+                0 0 0 6px rgba(251, 191, 36, 0.08),   /* halo suave */
+                0 0 40px var(--accent-glow);           /* glow */
+            flex-shrink: 0;
+            margin-bottom: 6px;
+            position: relative;
+        }
+
+        /* Cuando hay imagen subida (foto de la abuela) */
+        .landing-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;                     /* recorta en círculo */
+            object-position: center 30%;           /* centra el rostro arriba */
+            display: block;
+        }
+
+        /* Cuando es emoji (por defecto) */
+        .landing-image-emoji {
+            font-size: 4rem;
+            line-height: 1;
+            filter: drop-shadow(0 0 22px var(--accent-glow));
+            animation: floatEmoji 3.2s ease-in-out infinite;
+        }
+        @keyframes floatEmoji {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-6px); }
+        }
+
+        /* ---------- TÍTULO ---------- */
+        .landing-title {
+            font-size: 1.7rem;
+            font-weight: 900;
+            color: var(--accent);
+            line-height: 1.15;
+            font-family: var(--font-heading);
+            text-shadow: 0 0 26px var(--accent-glow);
+            letter-spacing: 0.2px;
+            max-width: 340px;
+            margin-top: 4px;
+        }
+
+        /* ---------- SUBTÍTULO ---------- */
+        .landing-sub {
+            font-size: 0.88rem;
+            color: var(--muted);
+            line-height: 1.5;
+            max-width: 340px;
+            margin-bottom: 6px;
+        }
+
+        /* ---------- BOTÓN PRINCIPAL ---------- */
+        .landing-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--accent), #f59e0b);
+            color: var(--accent-text);
+            padding: 16px 28px;
+            border-radius: 999px;
+            font-weight: 900;
+            font-size: 1rem;
+            text-decoration: none;
+            box-shadow: 0 8px 22px -6px var(--accent-glow);
+            transition: transform 0.15s, box-shadow 0.2s;
+            letter-spacing: 0.3px;
+            min-width: 250px;
+            max-width: 100%;
+            font-family: inherit;
+        }
+        .landing-cta:active {
+            transform: scale(0.97);
+            box-shadow: 0 4px 14px -4px var(--accent-glow);
+        }
+
+        /* ---------- BOTÓN SECUNDARIO ---------- */
+        .landing-cta-secundario {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: transparent;
+            color: var(--accent);
+            padding: 11px 22px;
+            border-radius: 999px;
+            font-weight: 800;
+            font-size: 0.86rem;
+            text-decoration: none;
+            border: 1.5px solid var(--accent);
+            transition: all 0.2s;
+            min-width: 250px;
+            max-width: 100%;
+            font-family: inherit;
+        }
+        .landing-cta-secundario:active {
+            background: var(--accent-soft);
+            transform: scale(0.98);
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .landing-footer {
+            position: relative;
+            z-index: 1;
+            margin-top: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            text-align: center;
+        }
+
+        .landing-firma {
+            font-size: 0.78rem;
+            color: var(--muted);
+            line-height: 1.3;
+        }
+
+        .landing-firma-sub {
+            font-size: 0.68rem;
+            color: var(--muted-2);
+            font-style: italic;
+            line-height: 1.3;
+        }
+
+        /* ---------- ADMIN OCULTO ---------- */
+        .admin-hidden-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 0.9rem;
+            color: var(--muted-2);
+            opacity: 0.15;
+            transition: opacity 0.25s ease, transform 0.2s ease, background 0.2s ease;
+            text-decoration: none;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            margin-top: 6px;
+        }
+        .admin-hidden-btn:hover,
+        .admin-hidden-btn:active {
+            opacity: 1;
+            background: var(--accent-soft);
+            transform: scale(1.1);
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (min-width: 640px) {
+            .landing-title    { font-size: 2.1rem; max-width: 440px; }
+            .landing-sub      { font-size: 0.98rem; max-width: 420px; }
+            .landing-image    { width: 170px; height: 170px; }
+            .landing-image-emoji { font-size: 4.8rem; }
+        }
+
+        /* ============================================================
+           PLANTILLA CLÁSICO
+           ============================================================ */
+        body.plantilla-clasico .landing-hero {
+            background: linear-gradient(160deg, #ffffff 0%, #fef3c7 100%);
+        }
+        body.plantilla-clasico .landing-image {
+            background: #ffffff;
+            border-width: 4px;
+        }
+        body.plantilla-clasico .landing-title {
+            text-shadow: none;
+        }
+        body.plantilla-clasico .landing-cta-secundario {
+            border-width: 2px;
+        }
+
+        /* ============================================================
+           PLANTILLA MINIMAL
+           ============================================================ */
+        body.plantilla-minimal .landing-hero {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        body.plantilla-minimal .landing-hero-glow {
+            display: none;
+        }
+        body.plantilla-minimal .landing-title {
+            text-shadow: none;
+            color: var(--text);
+        }
+        body.plantilla-minimal .landing-image {
+            box-shadow: none;
+            border-width: 1px;
+            border-color: var(--border);
+            background: var(--surface-2);
+        }
+        body.plantilla-minimal .landing-image-emoji {
+            filter: none;
+            animation: none;
+        }
+        body.plantilla-minimal .landing-cta {
+            background: var(--accent);
+            box-shadow: none;
+            border-radius: var(--radius-sm);
+        }
+        body.plantilla-minimal .landing-cta-secundario {
+            border-color: var(--border);
+            color: var(--muted);
+            border-radius: var(--radius-sm);
+        }
+
+        /* ============================================================
+           PLANTILLA NEÓN
+           ============================================================ */
+        body.plantilla-neon .landing-title {
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            animation: neonPulse 3s ease-in-out infinite;
+        }
+        body.plantilla-neon .landing-image {
+            box-shadow:
+                0 0 0 6px rgba(255, 45, 149, 0.15),
+                0 0 40px var(--accent-glow);
+        }
+        body.plantilla-neon .landing-cta {
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-size: 0.92rem;
+        }
+        body.plantilla-neon .landing-cta-secundario {
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+        @keyframes neonPulse {
+            0%, 100% { text-shadow: 0 0 18px var(--accent-glow); }
+            50%      { text-shadow: 0 0 32px var(--accent-glow), 0 0 60px var(--accent-glow); }
+        }
+    </style>
+
+</body>
+</html>

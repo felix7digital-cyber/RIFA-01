@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fbbf24">
+    <title>🧪 Test · Motor de Rifas</title>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:system-ui,-apple-system,sans-serif;background:#0f172a;color:#f8fafc;padding:16px;min-height:100vh}
+        .header{background:#1e293b;border:1.5px solid #fbbf24;border-radius:14px;padding:18px;margin-bottom:16px;text-align:center}
+        .header h1{color:#fbbf24;font-size:1.3rem;margin-bottom:6px}
+        .header p{color:#94a3b8;font-size:.85rem;line-height:1.4}
+        .resumen{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+        .resumen-card{background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:14px 8px;text-align:center}
+        .resumen-card h4{font-size:1.6rem;margin-bottom:4px;font-weight:900}
+        .resumen-card p{font-size:.68rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;font-weight:800}
+        .resumen-card.ok h4{color:#34d399}.resumen-card.fail h4{color:#f87171}.resumen-card.total h4{color:#fbbf24}
+        .botones{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+        .btn{width:100%;padding:14px;border-radius:9px;font-weight:800;font-size:.95rem;cursor:pointer;font-family:inherit;border:none;transition:opacity .15s,transform .1s}
+        .btn:active:not(:disabled){transform:scale(.98);opacity:.9}
+        .btn:disabled{opacity:.5;cursor:wait}
+        .btn.primario{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000;box-shadow:0 4px 14px rgba(251,191,36,.35)}
+        .btn.secundario{background:transparent;border:1.5px solid #38bdf8;color:#38bdf8}
+        .btn.ok{background:linear-gradient(135deg,#34d399,#059669);color:#000;box-shadow:0 4px 14px rgba(52,211,153,.3)}
+        .btn.peligro{background:linear-gradient(135deg,#f87171,#dc2626);color:#fff;box-shadow:0 4px 14px rgba(248,113,113,.3)}
+        .btn.mini{padding:10px;font-size:.85rem}
+        .seccion{background:#1e293b;border:1.5px solid #334155;border-radius:12px;padding:16px;margin-bottom:14px}
+        .seccion h3{font-size:.95rem;color:#fbbf24;border-bottom:1px solid #334155;padding-bottom:8px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+        .seccion h3 span.contador{font-size:.72rem;background:#0f172a;padding:3px 10px;border-radius:10px;color:#94a3b8;font-weight:700}
+        .test-item{display:flex;gap:10px;padding:10px 12px;background:#0f172a;border:1px solid #334155;border-radius:8px;margin-bottom:8px;font-size:.82rem;line-height:1.4;align-items:flex-start}
+        .test-item:last-child{margin-bottom:0}
+        .test-item .icono{font-size:1.1rem;flex-shrink:0;line-height:1;margin-top:2px}
+        .test-item.ok{border-color:rgba(52,211,153,.45)}.test-item.ok .icono{color:#34d399}
+        .test-item.fail{border-color:rgba(248,113,113,.45)}.test-item.fail .icono{color:#f87171}
+        .test-item.warn{border-color:rgba(251,191,36,.45)}.test-item.warn .icono{color:#fbbf24}
+        .test-item .contenido{flex:1;min-width:0}
+        .test-item .nombre{font-weight:800;color:#f8fafc;margin-bottom:3px}
+        .test-item .mensaje{color:#94a3b8;font-size:.76rem;word-break:break-word}
+        .log{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;font-family:"SF Mono","Roboto Mono",monospace;font-size:.72rem;color:#94a3b8;max-height:300px;overflow-y:auto;line-height:1.5;white-space:pre-wrap;word-break:break-all}
+        .log .linea-ok{color:#34d399}.log .linea-fail{color:#f87171}.log .linea-info{color:#38bdf8}
+        .empty-msg{color:#94a3b8;font-size:.85rem;text-align:center;padding:20px 0;font-style:italic}
+        .footer{text-align:center;color:#64748b;font-size:.72rem;padding:20px 0;line-height:1.5}
+        
+        /* Feedback con estrellas */
+        .feedback-box{background:linear-gradient(135deg,#1e293b 0%,#131d31 100%);border:1.5px solid #38bdf8;border-radius:14px;padding:20px;margin-bottom:16px;text-align:center;position:relative}
+        .feedback-box h3{font-size:1rem;color:#38bdf8;margin-bottom:6px}
+        .feedback-box p{font-size:.82rem;color:#94a3b8;line-height:1.45;margin-bottom:14px}
+        .stars{display:flex;justify-content:center;gap:8px;margin-bottom:12px;direction:ltr}
+        .stars button{background:none;border:none;font-size:2.2rem;color:#334155;cursor:pointer;padding:0 2px;transition:all .15s;font-family:inherit}
+        .stars button:hover,.stars button.activa{color:#fbbf24;text-shadow:0 0 15px rgba(251,191,36,.5);transform:scale(1.1)}
+        .feedback-box textarea{width:100%;background:#0f172a;border:1.5px solid #334155;border-radius:8px;padding:10px;color:#f8fafc;font-family:inherit;font-size:.85rem;resize:vertical;min-height:60px;margin-bottom:12px}
+        .feedback-box textarea:focus{border-color:#fbbf24;outline:none}
+        .feedback-acciones{display:grid;grid-template-columns:2fr 1fr;gap:8px}
+        .feedback-msg{font-size:.78rem;color:#34d399;font-weight:700;margin-top:10px;min-height:18px}
+        .feedback-contador{font-size:.68rem;color:#64748b;margin-top:8px}
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>🧪 Diagnóstico del sistema</h1>
+    <p>Verifica los 24 archivos, namespaces, almacenamiento y flujos. Al terminar, puedes copiar el informe completo y enviarlo.</p>
+</div>
+
+<div class="resumen">
+    <div class="resumen-card ok"><h4 id="cont-ok">0</h4><p>Pasaron</p></div>
+    <div class="resumen-card fail"><h4 id="cont-fail">0</h4><p>Fallaron</p></div>
+    <div class="resumen-card total"><h4 id="cont-total">0</h4><p>Total</p></div>
+</div>
+
+<div class="botones">
+    <button type="button" class="btn primario" id="btn-ejecutar">▶️ Ejecutar diagnóstico completo</button>
+    <button type="button" class="btn ok" id="btn-copiar-informe" disabled>📋 Copiar informe completo</button>
+    <button type="button" class="btn secundario" id="btn-copiar-fallos" disabled>📋 Copiar solo fallos</button>
+    <button type="button" class="btn secundario" id="btn-limpiar" disabled>🧹 Limpiar caché + recargar</button>
+    <button type="button" class="btn peligro" id="btn-registro-prueba" disabled>🧪 Simular registro de prueba</button>
+</div>
+
+<div id="resultados">
+    <div class="seccion">
+        <h3>Resultados<span class="contador" id="cont-resultados">0 tests</span></h3>
+        <p class="empty-msg">Pulsa "Ejecutar diagnóstico completo" para comenzar.</p>
+    </div>
+</div>
+
+<div class="seccion" id="seccion-archivos" style="display:none">
+    <h3>Archivos verificados<span class="contador" id="cont-archivos">0</span></h3>
+    <div id="lista-archivos"></div>
+</div>
+
+<div class="seccion" id="seccion-log" style="display:none">
+    <h3>Log detallado<span class="contador">debug</span></h3>
+    <div class="log" id="log"></div>
+</div>
+
+<!-- Feedback con estrellas -->
+<div class="feedback-box" id="feedback-box">
+    <h3>💬 ¿Cómo calificarías este proyecto?</h3>
+    <p>Tu opinión ayuda a mejorar el sistema. Es opcional y se guarda solo en tu dispositivo.</p>
+    <div class="stars" id="stars">
+        <button type="button" data-rating="1" aria-label="1 estrella">★</button>
+        <button type="button" data-rating="2" aria-label="2 estrellas">★</button>
+        <button type="button" data-rating="3" aria-label="3 estrellas">★</button>
+        <button type="button" data-rating="4" aria-label="4 estrellas">★</button>
+        <button type="button" data-rating="5" aria-label="5 estrellas">★</button>
+    </div>
+    <textarea id="feedback-comentario" placeholder="Comentario opcional (máx 200 caracteres)" maxlength="200"></textarea>
+    <div class="feedback-acciones">
+        <button type="button" class="btn mini primario" id="btn-enviar-feedback">Enviar</button>
+        <button type="button" class="btn mini secundario" id="btn-omitir-feedback">Omitir</button>
+    </div>
+    <p class="feedback-msg" id="feedback-msg"></p>
+    <p class="feedback-contador" id="feedback-contador"></p>
+</div>
+
+<div class="footer">
+    Motor de Rifas · v1.0.0 · Diagnóstico<br>
+    Todo se ejecuta en tu navegador. Nada se envía a servidores externos.
+</div>
+
+<script src="assets/js/ui.js" onerror="window.__uiError=true"></script>
+<script src="assets/js/storage.js" onerror="window.__storageError=true"></script>
+<script src="assets/js/md.js" onerror="window.__mdError=true"></script>
+<script src="assets/js/theme.js" onerror="window.__themeError=true"></script>
+<script src="assets/js/test.js"></script>
+
+</body>
+</html>

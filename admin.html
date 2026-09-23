@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#fbbf24">
+    <meta name="description" content="Panel de administración · Motor de Rifas.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <title>Admin · <span data-theme="rifa">Cargando…</span></title>
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%99%EF%B8%8F%3C/text%3E%3C/svg%3E">
+
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/plantillas.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+
+    <style>
+        .modo-term-opciones { display: flex; flex-direction: column; gap: 8px; }
+        .modo-term-card {
+            display: flex; gap: 12px; align-items: flex-start;
+            padding: 12px 14px; background: var(--bg);
+            border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+            cursor: pointer; transition: border-color 0.18s, background 0.18s;
+            font-family: inherit;
+        }
+        .modo-term-card:active { transform: scale(0.99); }
+        .modo-term-card input[type="radio"] {
+            width: 18px; height: 18px; accent-color: var(--accent);
+            flex-shrink: 0; margin-top: 2px; cursor: pointer;
+        }
+        .modo-term-card.activo { border-color: var(--accent); background: var(--accent-soft); }
+        .modo-term-card input[type="radio"]:checked ~ .modo-term-info .modo-term-titulo { color: var(--accent); }
+        .modo-term-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+        .modo-term-titulo {
+            font-size: 0.88rem; font-weight: 800; color: var(--text);
+            display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+        }
+        .modo-term-tag {
+            font-size: 0.6rem; font-weight: 900; padding: 2px 7px; border-radius: 8px;
+            background: var(--ok-soft); color: var(--ok);
+            text-transform: uppercase; letter-spacing: 0.4px;
+        }
+        .modo-term-tag.warn { background: var(--warn-soft); color: var(--warn); }
+        .modo-term-tag.info { background: var(--sky-soft); color: var(--sky); }
+        .modo-term-desc { font-size: 0.74rem; color: var(--muted); line-height: 1.4; }
+    </style>
+</head>
+<body data-page="admin">
+
+    <div class="pin-overlay" id="pin-overlay" hidden>
+        <div class="pin-logo" data-theme="logo">🔒</div>
+        <h2 class="pin-title">Panel bloqueado</h2>
+        <p class="pin-subtitle">Introduce tu PIN de 4 dígitos para acceder.</p>
+        <div class="pin-dots" id="pin-dots">
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+        </div>
+        <div class="pin-keypad" id="pin-keypad">
+            <button type="button" class="pin-key" data-num="1">1</button>
+            <button type="button" class="pin-key" data-num="2">2</button>
+            <button type="button" class="pin-key" data-num="3">3</button>
+            <button type="button" class="pin-key" data-num="4">4</button>
+            <button type="button" class="pin-key" data-num="5">5</button>
+            <button type="button" class="pin-key" data-num="6">6</button>
+            <button type="button" class="pin-key" data-num="7">7</button>
+            <button type="button" class="pin-key" data-num="8">8</button>
+            <button type="button" class="pin-key" data-num="9">9</button>
+            <button type="button" class="pin-key vacio"></button>
+            <button type="button" class="pin-key" data-num="0">0</button>
+            <button type="button" class="pin-key accion" id="pin-borrar">⌫</button>
+        </div>
+        <p class="pin-error" id="pin-error"></p>
+        <a href="index.html" class="btn-accion btn-ghost" style="max-width: 220px; text-decoration: none;">
+            ← Volver al launcher
+        </a>
+    </div>
+
+    <header class="fixed-header">
+        <div class="header-brand">
+            <div class="header-logo" data-theme="logo">⚙️</div>
+            <div class="header-title">Panel Admin</div>
+        </div>
+        <span class="header-badge danger">Restringido</span>
+    </header>
+
+    <div class="progress-bar-container">
+        <div class="progress-bar-fill" style="width: 100%;"></div>
+    </div>
+
+    <nav class="admin-tabs" id="admin-tabs" aria-label="Secciones del panel">
+        <div class="admin-tabs-inner">
+            <button type="button" class="admin-tab active" data-tab="dashboard"><span>📊</span><span>Dashboard</span></button>
+            <button type="button" class="admin-tab" data-tab="registros"><span>🎟️</span><span>Registros</span></button>
+            <button type="button" class="admin-tab" data-tab="recordatorios"><span>🔔</span><span>Recordatorios</span></button>
+            <button type="button" class="admin-tab" data-tab="landing"><span>🖼️</span><span>Landing</span></button>
+            <button type="button" class="admin-tab" data-tab="apariencia"><span>🎨</span><span>Apariencia</span></button>
+            <button type="button" class="admin-tab" data-tab="plantillas"><span>📦</span><span>Plantillas</span></button>
+            <button type="button" class="admin-tab" data-tab="premios"><span>🏆</span><span>Premios</span></button>
+            <button type="button" class="admin-tab" data-tab="identidad"><span>⚙️</span><span>Identidad</span></button>
+            <button type="button" class="admin-tab" data-tab="contenido"><span>📝</span><span>Contenido</span></button>
+            <button type="button" class="admin-tab" data-tab="respaldos"><span>💾</span><span>Respaldos</span></button>
+            <button type="button" class="admin-tab" data-tab="enlaces"><span>🔗</span><span>Enlaces</span></button>
+        </div>
+    </nav>
+
+    <main class="main-container">
+
+        <section class="admin-panel active" data-panel="dashboard">
+            <div class="admin-block">
+                <div class="admin-block-header">
+                    <div class="admin-block-title"><span>📊</span><span>Resumen general</span></div>
+                </div>
+                <p class="admin-hint">Vista rápida del estado actual de la rifa.</p>
+                <div class="stats-grid">
+                    <div class="stat-card"><h4 id="stat-libres">100</h4><p>Libres</p></div>
+                    <div class="stat-card warn"><h4 id="stat-apartados">0</h4><p>Apartados</p></div>
+                    <div class="stat-card ok"><h4 id="stat-pagados">0</h4><p>Pagados</p></div>
+                    <div class="stat-card info"><h4 id="stat-clientes">0</h4><p>Clientes</p></div>
+                </div>
+                <div class="progress-block">
+                    <div class="progress-block-label"><span>Progreso de venta</span><strong id="progress-txt">0%</strong></div>
+                    <div class="progress-block-bar"><div class="progress-block-fill" id="progress-dash-fill" style="width: 0%;"></div></div>
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>💱</span><span>Tasas actuales</span></div></div>
+                <div class="progress-block" style="padding:12px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+                        <span style="font-size:0.75rem;color:var(--muted);font-weight:700;">🇻🇪 1$ =</span>
+                        <strong id="dash-bcv-tasa" style="font-size:1.3rem;color:var(--accent);font-variant-numeric:tabular-nums;">— Bs</strong>
+                    </div>
+                    <div id="dash-bcv-info" style="font-size:0.66rem;color:var(--muted);text-align:center;">Cargando…</div>
+                </div>
+                <div class="progress-block" style="padding:12px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+                        <span style="font-size:0.75rem;color:var(--muted);font-weight:700;">🇨🇴 1$ =</span>
+                        <strong id="dash-cop-tasa" style="font-size:1.3rem;color:var(--accent);font-variant-numeric:tabular-nums;">— COP</strong>
+                    </div>
+                    <div id="dash-cop-info" style="font-size:0.66rem;color:var(--muted);text-align:center;">Cargando…</div>
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>⏱️</span><span>Últimos movimientos</span></div></div>
+                <div class="movimientos-list" id="movimientos-list">
+                    <p class="empty-msg">Aún no hay movimientos registrados.</p>
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>⚡</span><span>Acciones rápidas</span></div></div>
+                <div class="backup-grid">
+                    <button type="button" class="backup-card" data-accion="ir-registros">
+                        <div class="backup-icon">🎟️</div>
+                        <div class="backup-info"><div class="backup-title">Ver registros</div><div class="backup-desc">Ir a la lista completa</div></div>
+                    </button>
+                    <button type="button" class="backup-card" data-accion="ir-recordatorios">
+                        <div class="backup-icon">🔔</div>
+                        <div class="backup-info"><div class="backup-title">Recordatorios</div><div class="backup-desc">Ver quiénes autorizaron</div></div>
+                    </button>
+                    <button type="button" class="backup-card" data-accion="venta-manual">
+                        <div class="backup-icon">➕</div>
+                        <div class="backup-info"><div class="backup-title">Venta manual</div><div class="backup-desc">Registrar venta en persona</div></div>
+                    </button>
+                    <button type="button" class="backup-card" data-accion="backup-json">
+                        <div class="backup-icon">💾</div>
+                        <div class="backup-info"><div class="backup-title">Respaldo rápido</div><div class="backup-desc">Descargar JSON actual</div></div>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-panel" data-panel="registros">
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>🔍</span><span>Buscar</span></div></div>
+                <div class="admin-search">
+                    <input type="text" class="input-field" id="admin-buscar" placeholder="Buscar por número, nombre o cédula…" autocomplete="off">
+                </div>
+                <div class="filter-chips" id="filter-chips">
+                    <button type="button" class="chip active" data-filtro="todos">Todos</button>
+                    <button type="button" class="chip" data-filtro="pagado">Pagados</button>
+                    <button type="button" class="chip" data-filtro="apartado">Apartados</button>
+                </div>
+            </div>
+            <div class="admin-block">
+                <div class="admin-block-header">
+                    <div class="admin-block-title"><span>🎟️</span><span>Registros</span></div>
+                    <span class="header-badge info" id="contador-registros">0</span>
+                </div>
+                <div class="reservas-lista" id="lista-reservas">
+                    <p class="empty-msg">Cargando registros…</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-panel" data-panel="recordatorios">
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>🔔</span><span>Estado de autorizaciones</span></div></div>
+                <p class="admin-hint">Personas que aceptaron recibir recordatorios de pago por WhatsApp u otro medio al momento de reservar.</p>
+                <div class="stats-grid">
+                    <div class="stat-card info"><h4 id="rec-stat-autorizaron">0</h4><p>Autorizaron</p></div>
+                    <div class="stat-card warn"><h4 id="rec-stat-pendientes">0</h4><p>Pendientes</p></div>
+                    <div class="stat-card ok"><h4 id="rec-stat-vencidos">0</h4><p>Vencidos</p></div>
+                    <div class="stat-card"><h4 id="rec-stat-nopagados">0</h4><p>Sin autorizar</p></div>
+                </div>
+            </div>
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>📢</span><span>Acciones masivas</span></div></div>
+                <p class="admin-hint">Envía el recordatorio a todos los pendientes de pago de una sola vez.</p>
+                <button type="button" class="btn-accion btn-ok" id="rec-btn-recordar-todos">📲 Recordar a TODOS los pendientes</button>
+                <button type="button" class="btn-accion btn-blue" id="rec-btn-recordar-vencidos">🚨 Recordar solo a VENCIDOS</button>
+                <button type="button" class="btn-accion btn-ghost" id="rec-btn-refrescar">🔄 Refrescar datos</button>
+            </div>
+            <div class="admin-block">
+                <div class="admin-block-header">
+                    <div class="admin-block-title"><span>🎯</span><span>Filtrar lista</span></div>
+                    <span class="header-badge info" id="rec-contador">0</span>
+                </div>
+                <div class="filter-chips" id="rec-filter-chips">
+                    <button type="button" class="chip active" data-rec-filtro="autorizados">Autorizados</button>
+                    <button type="button" class="chip" data-rec-filtro="pendientes">Pendientes de pago</button>
+                    <button type="button" class="chip" data-rec-filtro="vencidos">Vencidos</button>
+                    <button type="button" class="chip" data-rec-filtro="sin-autorizar">Sin autorizar</button>
+                    <button type="button" class="chip" data-rec-filtro="todos">Todos</button>
+                </div>
+                <div class="admin-search">
+                    <input type="text" class="input-field" id="rec-buscar" placeholder="Buscar por nombre, cédula o número…" autocomplete="off">
+                </div>
+            </div>
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>📋</span><span>Lista de personas</span></div></div>
+                <div class="recordatorios-lista" id="lista-recordatorios">
+                    <p class="empty-msg">Cargando…</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-panel" data-panel="landing">
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>🖼️</span><span>Imagen principal</span></div></div>
+                <p class="admin-hint">Esta imagen aparece arriba del título en la landing. Se recorta automáticamente en círculo. Si no subes ninguna, se muestra el emoji 🎟️ por defecto.</p>
+                <input type="file" id="landing-imagen-input" accept="image/*" hidden>
+                <div id="landing-imagen-vacia">
+                    <button type="button" class="upload-zone" id="landing-imagen-btn">
+                        <span class="upload-zone-icon">📸</span>
+                        <span class="upload-zone-text">Toca para subir la foto</span>
+                        <span class="upload-zone-hint">Se comprime a 800px · JPEG/PNG</span>
+                    </button>
+                </div>
+                <div id="landing-imagen-preview" class="hidden">
+                    <div class="upload-preview">
+                        <img id="landing-imagen-thumb" src="" alt="preview" style="width:72px;height:72px;border-radius:50%;">
+                        <div class="upload-preview-info">
+                            <div class="upload-preview-name" id="landing-imagen-name">imagen.jpg</div>
+                            <div class="upload-preview-meta" id="landing-imagen-size">0 KB</div>
+                        </div>
+                        <button type="button" class="icon-btn danger" id="landing-imagen-eliminar">🗑</button>
+                    </div>
+                </div>
+                <div style="display:flex;gap:12px;align-items:center;margin-top:8px;">
+                    <div class="logo-preview" id="landing-imagen-thumb-2" style="width:84px;height:84px;border-radius:50%;font-size:2rem;">🎟️</div>
+                    <div style="flex:1;font-size:0.74rem;color:var(--muted);line-height:1.4;">Vista previa. Así se verá en la landing.</div>
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>📝</span><span>Textos de la landing</span></div></div>
+                <div class="input-group">
+                    <label for="landing-titulo">Título principal</label>
+                    <input type="text" class="input-field" id="landing-titulo" placeholder="Una Bendición que Merece lo Mejor" maxlength="120">
+                </div>
+                <div class="input-group">
+                    <label for="landing-subtitulo">Subtítulo</label>
+                    <textarea class="input-field" id="landing-subtitulo" rows="3" maxlength="280" placeholder="Tener a nuestra abuela con nosotros es un regalo incalculable."></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="landing-cta-principal">Botón principal</label>
+                    <input type="text" class="input-field" id="landing-cta-principal" placeholder="🎟️ Quiero jugar un número" maxlength="60">
+                    <small style="font-size:0.68rem;color:var(--muted);margin-top:2px;">Siempre lleva a la grilla de rifas.</small>
+                </div>
+                <div class="input-group">
+                    <label for="landing-cta-secundario">Botón secundario</label>
+                    <input type="text" class="input-field" id="landing-cta-secundario" placeholder="📖 Leer el motivo" maxlength="60">
+                </div>
+                <div class="input-group">
+                    <label for="landing-cta-secundario-url">Enlace del botón secundario</label>
+                    <input type="text" class="input-field" id="landing-cta-secundario-url" placeholder="motivo.html" maxlength="200">
+                    <small style="font-size:0.68rem;color:var(--muted);margin-top:2px;">Ej: <code>motivo.html</code>, <code>premios.html</code>, <code>boleto.html</code></small>
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>👁️</span><span>Vista previa en vivo</span></div></div>
+                <p class="admin-hint">Pulsa <strong>"🔄 Actualizar vista previa"</strong> para ver los cambios.</p>
+                <div class="preview-frame-wrap">
+                    <span class="preview-frame-label">index.html</span>
+                    <iframe class="preview-frame" id="landing-preview-frame" src="index.html?preview=1&t=0" title="Vista previa landing" loading="lazy"></iframe>
+                </div>
+                <button type="button" class="btn-accion btn-blue" id="btn-refrescar-landing">🔄 Actualizar vista previa</button>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>💾</span><span>Guardar cambios</span></div></div>
+                <button type="button" class="btn-accion" id="btn-guardar-landing">✅ Guardar landing</button>
+                <button type="button" class="btn-accion btn-ghost" id="btn-reset-landing">♻️ Restaurar textos por defecto</button>
+            </div>
+        </section>
+
+        <section class="admin-panel" data-panel="apariencia">
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>🎨</span><span>Colores</span></div></div>
+                <p class="admin-hint">El color de acento se aplica a botones, bordes y elementos destacados.</p>
+                <div class="color-row">
+                    <input type="color" id="color-acento" value="#fbbf24">
+                    <div class="color-row-info">
+                        <span class="color-row-label">Color de acento</span>
+                        <span class="color-row-value" id="color-acento-hex">#fbbf24</span>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <input type="color" id="color-secundario" value="#38bdf8">
+                    <div class="color-row-info">
+                        <span class="color-row-label">Color secundario</span>
+                        <span class="color-row-value" id="color-secundario-hex">#38bdf8</span>
+                    </div>
+                </div>
+                <div>
+                    <span class="color-row-label" style="display:block;margin-bottom:6px;">Paleta rápida (acento)</span>
+                    <div class="color-presets" id="color-presets"></div>
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>✍️</span><span>Tipografía</span></div></div>
+                <div class="input-group">
+                    <label for="tipografia-select">Fuente del sistema</label>
+                    <select class="select-field" id="tipografia-select">
+                        <option value="system">Sistema (San Francisco / Roboto)</option>
+                        <option value="serif">Serif (Georgia / Times)</option>
+                        <option value="mono">Monospace (Courier)</option>
+                        <option value="rounded">Rounded (SF Pro Rounded)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>🖼️</span><span>Logo</span></div></div>
+                <p class="admin-hint">Puedes usar un emoji, una palabra o subir tu propia imagen.</p>
+                <div class="input-group">
+                    <label for="logo-tipo">Tipo de logo</label>
+                    <select class="select-field" id="logo-tipo">
+                        <option value="emoji">Emoji</option>
+                        <option value="texto">Texto</option>
+                        <option value="imagen">Imagen</option>
+                    </select>
+                </div>
+                <div class="input-group" id="grupo-logo-emoji">
+                    <label for="logo-emoji">Emoji del logo</label>
+                    <input type="text" class="input-field" id="logo-emoji" placeholder="🎟️" maxlength="4">
+                </div>
+                <div class="input-group hidden" id="grupo-logo-texto">
+                    <label for="logo-texto">Texto del logo</label>
+                    <input type="text" class="input-field" id="logo-texto" placeholder="MI RIFA" maxlength="12">
+                </div>
+                <div class="input-group hidden" id="grupo-logo-imagen">
+                    <label>Imagen del logo</label>
+                    <input type="file" id="logo-archivo" accept="image/*" hidden>
+                    <button type="button" class="upload-zone" id="logo-upload-btn">
+                        <span class="upload-zone-icon">📸</span>
+                        <span class="upload-zone-text">Toca para subir una imagen</span>
+                        <span class="upload-zone-hint">Se comprimirá automáticamente a 600px</span>
+                    </button>
+                </div>
+                <div style="display: flex; gap: 12px; align-items: center; margin-top: 6px;">
+                    <div class="logo-preview" id="logo-preview">🎟️</div>
+                    <div style="flex:1;font-size:0.75rem;color:var(--muted);">Vista previa del logo en el header.</div>
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>💾</span><span>Guardar cambios visuales</span></div></div>
+                <button type="button" class="btn-accion" id="btn-guardar-apariencia">✅ Aplicar y guardar</button>
+                <button type="button" class="btn-accion btn-ghost" id="btn-preview-apariencia">👁️ Ver vista previa</button>
+            </div>
+        </section>
+
+        <section class="admin-panel" data-panel="plantillas">
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>📦</span><span>Elige tu plantilla</span></div></div>
+                <p class="admin-hint">Cambia el "look & feel" completo de la web con un solo toque.</p>
+                <div class="plantillas-grid" id="plantillas-grid">
+                    <button type="button" class="plantilla-card" data-plantilla="boleto">
+                        <div class="plantilla-swatch swatch-boleto"></div>
+                        <div class="plantilla-nombre">Boleto</div>
+                        <div class="plantilla-desc">Oscura + dorada · formal</div>
+                    </button>
+                    <button type="button" class="plantilla-card" data-plantilla="neon">
+                        <div class="plantilla-swatch swatch-neon"></div>
+                        <div class="plantilla-nombre">Neón</div>
+                        <div class="plantilla-desc">Fluor · juvenil / gaming</div>
+                    </button>
+                    <button type="button" class="plantilla-card" data-plantilla="clasico">
+                        <div class="plantilla-swatch swatch-clasico"></div>
+                        <div class="plantilla-nombre">Clásico</div>
+                        <div class="plantilla-desc">Clara + feria · tradicional</div>
+                    </button>
+                    <button type="button" class="plantilla-card" data-plantilla="minimal">
+                        <div class="plantilla-swatch swatch-minimal"></div>
+                        <div class="plantilla-nombre">Minimal</div>
+                        <div class="plantilla-desc">Blanca · corporativa</div>
+                    </button>
+                </div>
+            </div>
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>👁️</span><span>Vista previa en vivo</span></div></div>
+                <div class="preview-frame-wrap">
+                    <span class="preview-frame-label">rifas.html</span>
+                    <iframe class="preview-frame" id="preview-frame" src="rifas.html?embed=1&preview=1" title="Vista previa" loading="lazy"></iframe>
+                </div>
+                <button type="button" class="btn-accion" id="btn-guardar-plantilla">✅ Guardar esta plantilla</button>
+            </div>
+        </section>
+
+        <section class="admin-panel" data-panel="premios">
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>🏆</span><span>Premios actuales</span></div></div>
+                <div class="premios-admin-list" id="premios-admin-list">
+                    <p class="empty-msg">Sin premios configurados.</p>
+                </div>
+            </div>
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>➕</span><span>Añadir premio</span></div></div>
+                <div class="input-group">
+                    <label for="premio-puesto">Puesto (1 = principal)</label>
+                    <input type="number" class="input-field" id="premio-puesto" min="1" max="20" value="1">
+                </div>
+                <div class="input-group">
+                    <label for="premio-titulo">Título</label>
+                    <input type="text" class="input-field" id="premio-titulo" placeholder="Ej: Smartphone de alta gama" maxlength="80">
+                </div>
+                <div class="input-group">
+                    <label for="premio-descripcion">Descripción</label>
+                    <textarea class="input-field" id="premio-descripcion" placeholder="Describe brevemente el premio…" maxlength="250" rows="3"></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Imagen (opcional)</label>
+                    <input type="file" id="premio-imagen-input" accept="image/*" hidden>
+                    <button type="button" class="upload-zone" id="premio-imagen-btn">
+                        <span class="upload-zone-icon">📸</span>
+                        <span class="upload-zone-text">Toca para subir imagen</span>
+                        <span class="upload-zone-hint">Se comprime a 600px automáticamente</span>
+                    </button>
+                    <div id="premio-imagen-preview" class="hidden" style="margin-top:8px;">
+                        <div class="upload-preview">
+                            <img id="premio-imagen-thumb" src="" alt="preview">
+                            <div class="upload-preview-info">
+                                <div class="upload-preview-name" id="premio-imagen-name">imagen.jpg</div>
+                                <div class="upload-preview-meta" id="premio-imagen-size">0 KB</div>
+                            </div>
+                            <button type="button" class="icon-btn danger" id="premio-imagen-eliminar">🗑</button>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn-accion" id="btn-agregar-premio">➕ Añadir a la lista</button>
+            </div>
+        </section>
+
+        <section class="admin-panel" data-panel="identidad">
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>⚙️</span><span>Datos de la rifa</span></div></div>
+                <div class="input-group">
+                    <label for="ident-nombre">Nombre de la rifa</label>
+                    <input type="text" class="input-field" id="ident-nombre" placeholder="Gran Rifa Familiar" maxlength="60">
+                </div>
+                <div class="input-group">
+                    <label for="ident-loteria">Lotería de referencia</label>
+                    <input type="text" class="input-field" id="ident-loteria" placeholder="Chance A" maxlength="40">
+                </div>
+                <div class="input-group">
+                    <label for="ident-monto">Monto por número (USD)</label>
+                    <input type="text" class="input-field" id="ident-monto" placeholder="$5" maxlength="10">
+                </div>
+                <div class="input-group">
+                    <label for="ident-whatsapp">WhatsApp del organizador</label>
+                    <input type="tel" class="input-field" id="ident-whatsapp" placeholder="+58 412-1234567" inputmode="tel">
+                </div>
+                <div class="input-group">
+                    <label for="ident-nombre-org">Nombre del organizador (visible)</label>
+                    <input type="text" class="input-field" id="ident-nombre-org" placeholder="Familia Arrieche" maxlength="60">
+                </div>
+                <div class="input-group">
+                    <label for="ident-horario">Horario de atención</label>
+                    <input type="text" class="input-field" id="ident-horario" placeholder="8:00 AM a 8:00 PM" maxlength="40">
+                </div>
+                <div class="admin-edit-grid">
+                    <div class="input-group">
+                        <label for="ident-fecha">Fecha del sorteo</label>
+                        <input type="date" class="input-field" id="ident-fecha">
+                    </div>
+                    <div class="input-group">
+                        <label for="ident-hora">Hora del sorteo</label>
+                        <input type="time" class="input-field" id="ident-hora">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="ident-mensaje">Mensaje predeterminado de WhatsApp</label>
+                    <textarea class="input-field" id="ident-mensaje" rows="4" maxlength="300" placeholder="¡Hola! Confirmo la reserva de mi número…"></textarea>
+                    <small style="font-size:0.68rem;color:var(--muted);margin-top:2px;">Se usa cuando el comprador pulsa "Avisar" desde el boleto.</small>
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>🇻🇪</span><span>Tasa BCV (USD → Bs)</span></div></div>
+                <p class="admin-hint">Tasa oficial del Banco Central de Venezuela.</p>
+                <div class="filter-chips" id="bcv-modo-chips" style="margin-top:4px;">
+                    <button type="button" class="chip active" data-bcv-modo="auto">🌐 Automático</button>
+                    <button type="button" class="chip" data-bcv-modo="manual">✏️ Manual</button>
+                </div>
+                <div id="bcv-grupo-auto">
+                    <div class="progress-block" style="padding:12px;">
+                        <div class="progress-block-label">
+                            <span>Tasa actual</span>
+                            <strong id="bcv-tasa-txt">— Bs/$</strong>
+                        </div>
+                        <div id="bcv-tasa-info" style="font-size:0.7rem;color:var(--muted);text-align:center;margin-top:6px;line-height:1.4;min-height:16px;">Cargando…</div>
+                    </div>
+                    <button type="button" class="btn-accion btn-blue" id="bcv-refresh-btn">🔄 Actualizar tasa BCV</button>
+                </div>
+                <div id="bcv-grupo-manual" class="hidden">
+                    <div class="input-group">
+                        <label for="bcv-tasa-input">Tasa manual (Bs por $)</label>
+                        <input type="tel" inputmode="decimal" class="input-field" id="bcv-tasa-input" placeholder="Ej: 36.50">
+                    </div>
+                    <button type="button" class="btn-accion" id="bcv-guardar-manual-btn">✅ Guardar tasa BCV manual</button>
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>🇨🇴</span><span>Tasa COP (USD → peso)</span></div></div>
+                <p class="admin-hint">Tasa de cambio USD a peso colombiano.</p>
+                <div class="filter-chips" id="cop-modo-chips" style="margin-top:4px;">
+                    <button type="button" class="chip active" data-cop-modo="auto">🌐 Automático</button>
+                    <button type="button" class="chip" data-cop-modo="manual">✏️ Manual</button>
+                </div>
+                <div id="cop-grupo-auto">
+                    <div class="progress-block" style="padding:12px;">
+                        <div class="progress-block-label">
+                            <span>Tasa actual</span>
+                            <strong id="cop-tasa-txt">— COP/$</strong>
+                        </div>
+                        <div id="cop-tasa-info" style="font-size:0.7rem;color:var(--muted);text-align:center;margin-top:6px;line-height:1.4;min-height:16px;">Cargando…</div>
+                    </div>
+                    <button type="button" class="btn-accion btn-blue" id="cop-refresh-btn">🔄 Actualizar tasa COP</button>
+                </div>
+                <div id="cop-grupo-manual" class="hidden">
+                    <div class="input-group">
+                        <label for="cop-tasa-input">Tasa manual (COP por $)</label>
+                        <input type="tel" inputmode="decimal" class="input-field" id="cop-tasa-input" placeholder="Ej: 4200">
+                    </div>
+                    <button type="button" class="btn-accion" id="cop-guardar-manual-btn">✅ Guardar tasa COP manual</button>
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>🎛️</span><span>Presentación</span></div></div>
+                <div class="input-group">
+                    <label for="grilla-columnas">Columnas de la grilla (móvil)</label>
+                    <select class="select-field" id="grilla-columnas">
+                        <option value="4">4 columnas (grandes)</option>
+                        <option value="5">5 columnas</option>
+                        <option value="6">6 columnas</option>
+                        <option value="7" selected>7 columnas (recomendado)</option>
+                        <option value="8">8 columnas</option>
+                        <option value="9">9 columnas</option>
+                        <option value="10">10 columnas (compactas)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="ident-mensaje-boleto">Mensaje dentro del boleto</label>
+                    <textarea class="input-field" id="ident-mensaje-boleto" rows="3" maxlength="200" placeholder="Gracias por apoyar a Gran Rifa Familiar. 💛"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="ident-horas-reserva">Horas límite para pagar una reserva</label>
+                    <input type="number" class="input-field" id="ident-horas-reserva" min="1" max="720" value="48">
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>💳</span><span>Pago Móvil (Venezuela)</span></div></div>
+                <div class="input-group">
+                    <label for="ident-banco">Banco</label>
+                    <input type="text" class="input-field" id="ident-banco" placeholder="Ej: Banesco (0134)" maxlength="40">
+                </div>
+                <div class="admin-edit-grid">
+                    <div class="input-group">
+                        <label for="ident-pago-telefono">Teléfono</label>
+                        <input type="tel" class="input-field" id="ident-pago-telefono" placeholder="0412-1234567" inputmode="tel" maxlength="16">
+                    </div>
+                    <div class="input-group">
+                        <label for="ident-pago-cedula">Cédula</label>
+                        <input type="tel" class="input-field" id="ident-pago-cedula" placeholder="V-12.345.678" inputmode="numeric" maxlength="14">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="ident-pago-titular">Titular de la cuenta</label>
+                    <input type="text" class="input-field" id="ident-pago-titular" placeholder="Nombre completo" maxlength="80">
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>🇨🇴</span><span>Nequi (Colombia)</span></div></div>
+                <div class="input-group">
+                    <label for="ident-nequi-telefono">Teléfono Nequi</label>
+                    <input type="tel" class="input-field" id="ident-nequi-telefono" placeholder="300 123 4567" inputmode="tel" maxlength="20">
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>💳</span><span>Otro método de pago</span></div></div>
+                <p class="admin-hint">Si usas otro método (Zelle, Binance, etc.), descríbelo aquí. Deja vacío para ocultarlo.</p>
+                <div class="input-group">
+                    <label for="ident-otro-titulo">Título del método</label>
+                    <input type="text" class="input-field" id="ident-otro-titulo" placeholder="Ej: Zelle / Binance / PayPal" maxlength="40">
+                </div>
+                <div class="input-group">
+                    <label for="ident-otro-contenido">Información para el pago</label>
+                    <textarea class="input-field" id="ident-otro-contenido" rows="4" maxlength="400" placeholder="Ej:&#10;Correo: correo@ejemplo.com&#10;Titular: Félix Arrieche"></textarea>
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>🔐</span><span>Seguridad</span></div></div>
+                <div class="switch-row">
+                    <div class="switch-row-info">
+                        <div class="switch-row-title">PIN de admin</div>
+                        <div class="switch-row-desc">Pedir un código de 4 dígitos al abrir el panel</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="switch-pin">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+                <div class="input-group hidden" id="grupo-pin">
+                    <label for="pin-valor">PIN (4 dígitos)</label>
+                    <input type="tel" class="input-field" id="pin-valor" inputmode="numeric" maxlength="4" placeholder="••••">
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>📜</span><span>Aceptación de términos</span></div></div>
+                <p class="admin-hint">Define cómo el comprador acepta los términos y condiciones al reservar. Para rifas familiares, "Auto" es lo más cómodo.</p>
+                <div class="modo-term-opciones">
+                    <label class="modo-term-card" data-modo="auto">
+                        <input type="radio" name="modo-terminos" value="auto">
+                        <div class="modo-term-info">
+                            <div class="modo-term-titulo">🚀 Auto <span class="modo-term-tag">Recomendado familiar</span></div>
+                            <div class="modo-term-desc">Elegir número = aceptar. Solo microcopy debajo del botón. Cero fricción.</div>
+                        </div>
+                    </label>
+                    <label class="modo-term-card" data-modo="boton">
+                        <input type="radio" name="modo-terminos" value="boton">
+                        <div class="modo-term-info">
+                            <div class="modo-term-titulo">✅ Botón explícito</div>
+                            <div class="modo-term-desc">El botón dice "Confirmar y aceptar". Acto positivo sin checkbox.</div>
+                        </div>
+                    </label>
+                    <label class="modo-term-card" data-modo="checkbox">
+                        <input type="radio" name="modo-terminos" value="checkbox">
+                        <div class="modo-term-info">
+                            <div class="modo-term-titulo">☑️ Checkbox obligatorio <span class="modo-term-tag warn">Comercial</span></div>
+                            <div class="modo-term-desc">El usuario debe marcar la casilla. Máxima defensa legal.</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header">
+                    <div class="admin-block-title"><span>🎫</span><span>Acceso de compradores</span></div>
+                </div>
+                <p class="admin-hint">
+                    Define cómo se identifican los compradores al reservar y cómo consultan sus boletos después.
+                </p>
+
+                <div class="modo-term-opciones">
+                    <label class="modo-term-card" data-modo-acceso="cedula">
+                        <input type="radio" name="modo-acceso" value="cedula">
+                        <div class="modo-term-info">
+                            <div class="modo-term-titulo">🆔 Cédula obligatoria <span class="modo-term-tag info">Clásico</span></div>
+                            <div class="modo-term-desc">Todos deben ingresar cédula al reservar. Consulta con cédula. Control total, sin flexibilidad.</div>
+                        </div>
+                    </label>
+
+                    <label class="modo-term-card" data-modo-acceso="clave">
+                        <input type="radio" name="modo-acceso" value="clave">
+                        <div class="modo-term-info">
+                            <div class="modo-term-titulo">🎟️ Modo familiar <span class="modo-term-tag">Recomendado</span></div>
+                            <div class="modo-term-desc">El comprador decide: puede poner clave de 4 dígitos o dejarlo libre. Sin cédula obligatoria. Máxima flexibilidad.</div>
+                        </div>
+                    </label>
+
+                    <label class="modo-term-card" data-modo-acceso="publico">
+                        <input type="radio" name="modo-acceso" value="publico">
+                        <div class="modo-term-info">
+                            <div class="modo-term-titulo">🌐 Modo público <span class="modo-term-tag warn">Transparente</span></div>
+                            <div class="modo-term-desc">Solo nombre + teléfono al reservar. La lista pública de la grilla muestra todos. Cada persona recibe un código para ver su boleto individual.</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header">
+                    <div class="admin-block-title"><span>🔢</span><span>Grilla y aleatorio</span></div>
+                </div>
+                <p class="admin-hint">
+                    Ajusta cuántos números tiene la grilla y activa el botón
+                    "Sorpréndeme" para que los compradores elijan al azar.
+                </p>
+
+                <div class="input-group">
+                    <label for="opciones-total-numeros">Cantidad de números de la grilla</label>
+                    <select class="select-field" id="opciones-total-numeros">
+                        <option value="10">10 números (0-9)</option>
+                        <option value="15">15 números</option>
+                        <option value="20">20 números</option>
+                        <option value="25">25 números</option>
+                        <option value="30">30 números</option>
+                        <option value="35">35 números</option>
+                        <option value="40">40 números</option>
+                        <option value="50">50 números</option>
+                        <option value="60">60 números</option>
+                        <option value="70">70 números</option>
+                        <option value="80">80 números</option>
+                        <option value="90">90 números</option>
+                        <option value="100" selected>100 números (00-99)</option>
+                    </select>
+                    <small style="font-size:0.68rem;color:var(--muted);margin-top:2px;">
+                        Cambiar esto reinicia los números de la grilla. Los registros existentes se conservan.
+                    </small>
+                </div>
+
+                <div class="switch-row">
+                    <div class="switch-row-info">
+                        <div class="switch-row-title">🎲 Modo aleatorio</div>
+                        <div class="switch-row-desc">Permite al comprador elegir números al azar con un botón "Sorpréndeme". Solo elige entre las celdas visibles.</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="switch-aleatorio">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+
+                <div class="switch-row">
+                    <div class="switch-row-info">
+                        <div class="switch-row-title">🔀 Grilla mezclada (muestra)</div>
+                        <div class="switch-row-desc">La grilla muestra N números al azar del rango 00-99, ordenados de menor a mayor. Los números vendidos siempre aparecen. La muestra es fija hasta que pulses "Rebarajar".</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="switch-grilla-mezclada">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+
+                <button type="button" class="btn-accion btn-blue hidden" id="btn-rebarajar-muestra">
+                    🔀 Rebarajar muestra
+                </button>
+
+                <div class="preview-frame-wrap" style="margin-top:12px;">
+                    <span class="preview-frame-label">Vista previa · rifas.html</span>
+                    <iframe class="preview-frame" id="grilla-preview-frame"
+                        src="rifas.html?embed=1&preview=1&t=0"
+                        title="Vista previa de la grilla"
+                        loading="lazy"
+                        style="height:420px;"></iframe>
+                </div>
+
+                <button type="button" class="btn-accion btn-blue" id="btn-refrescar-grilla-preview">
+                    🔄 Actualizar vista previa
+                </button>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>⚡</span><span>Opciones avanzadas</span></div></div>
+                <div class="switch-row">
+                    <div class="switch-row-info">
+                        <div class="switch-row-title">Sorteo verificable</div>
+                        <div class="switch-row-desc">Permitir generar el sorteo con aleatoriedad criptográfica</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="switch-sorteo">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+                <div class="switch-row">
+                    <div class="switch-row-info">
+                        <div class="switch-row-title">Mostrar instrucciones</div>
+                        <div class="switch-row-desc">Enlace público a la guía de participación</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="switch-instrucciones" checked>
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <button type="button" class="btn-accion" id="btn-guardar-identidad">
+                ✅ Guardar identidad y configuración
+            </button>
+
+        </section>
+
+        <section class="admin-panel" data-panel="contenido">
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>📝</span><span>Editor de contenido</span></div></div>
+                <div class="input-group">
+                    <label for="md-selector">Archivo a editar</label>
+                    <select class="select-field" id="md-selector">
+                        <option value="terminos">content/terminos.md</option>
+                        <option value="motivo">content/motivo.md</option>
+                        <option value="instrucciones">content/instrucciones.md</option>
+                    </select>
+                </div>
+                <div class="md-editor">
+                    <div class="md-toolbar">
+                        <button type="button" class="md-tool" data-md="h1">H1</button>
+                        <button type="button" class="md-tool" data-md="h2">H2</button>
+                        <button type="button" class="md-tool" data-md="h3">H3</button>
+                        <button type="button" class="md-tool" data-md="bold"><b>B</b></button>
+                        <button type="button" class="md-tool" data-md="italic"><i>i</i></button>
+                        <button type="button" class="md-tool" data-md="list">• Lista</button>
+                        <button type="button" class="md-tool" data-md="olist">1. Lista</button>
+                        <button type="button" class="md-tool" data-md="hr">—</button>
+                    </div>
+                    <textarea class="md-textarea" id="md-textarea" placeholder="Escribe el contenido en formato Markdown…" spellcheck="false"></textarea>
+                    <div class="admin-block-header" style="padding-top:8px;">
+                        <div class="admin-block-title" style="font-size:0.82rem;"><span>👁️</span><span>Vista previa</span></div>
+                    </div>
+                    <div class="md-preview" id="md-preview">
+                        <p class="empty-msg">La vista previa aparecerá aquí.</p>
+                    </div>
+                </div>
+                <div class="admin-btn-row">
+                    <button type="button" class="btn-accion" id="btn-md-descargar">💾 Descargar .md</button>
+                    <button type="button" class="btn-accion btn-blue" id="btn-md-recargar">🔄 Recargar</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-panel" data-panel="respaldos">
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>💾</span><span>Descargar respaldo</span></div></div>
+                <div class="backup-grid">
+                    <button type="button" class="backup-card" data-accion="backup-json">
+                        <div class="backup-icon">📦</div>
+                        <div class="backup-info">
+                            <div class="backup-title">Respaldo JSON</div>
+                            <div class="backup-desc">Todos los datos en formato restaurable</div>
+                        </div>
+                    </button>
+                    <button type="button" class="backup-card" data-accion="backup-md">
+                        <div class="backup-icon">📄</div>
+                        <div class="backup-info">
+                            <div class="backup-title">Respaldo Markdown</div>
+                            <div class="backup-desc">Tabla legible con todos los registros</div>
+                        </div>
+                    </button>
+                    <button type="button" class="backup-card" data-accion="backup-csv">
+                        <div class="backup-icon">📊</div>
+                        <div class="backup-info">
+                            <div class="backup-title">Respaldo CSV</div>
+                            <div class="backup-desc">Compatible con Excel / Google Sheets</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>📥</span><span>Restaurar respaldo</span></div></div>
+                <input type="file" id="restore-file" accept=".json,application/json" hidden>
+                <button type="button" class="upload-zone" id="btn-restore-upload">
+                    <span class="upload-zone-icon">📂</span>
+                    <span class="upload-zone-text">Toca para seleccionar el archivo JSON</span>
+                    <span class="upload-zone-hint">Solo archivos generados por esta app</span>
+                </button>
+                <div class="input-group">
+                    <label for="restore-modo">Modo de restauración</label>
+                    <select class="select-field" id="restore-modo">
+                        <option value="reemplazar">Reemplazar todo</option>
+                        <option value="fusionar">Fusionar con datos actuales</option>
+                    </select>
+                </div>
+            </div>
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>⚠️</span><span>Zona crítica</span></div></div>
+                <div class="danger-zone">
+                    <div class="danger-zone-title">🗑 Borrar todos los datos</div>
+                    <p>Elimina permanentemente todos los registros de números.</p>
+                    <button type="button" class="btn-accion btn-danger" id="btn-reset-registros">Borrar registros</button>
+                </div>
+                <div class="danger-zone">
+                    <div class="danger-zone-title">♻️ Restaurar configuración</div>
+                    <p>Vuelve los colores, tipografía, plantilla y premios a los valores por defecto.</p>
+                    <button type="button" class="btn-accion btn-danger" id="btn-reset-config">Restaurar config por defecto</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-panel" data-panel="enlaces">
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>🔗</span><span>Enlaces públicos</span></div></div>
+                <div class="link-row">
+                    <div class="link-row-label">🏠 Landing</div>
+                    <div class="link-row-content">
+                        <input type="text" id="url-index" readonly>
+                        <button type="button" class="link-copy-btn" data-copy="url-index">Copiar</button>
+                    </div>
+                </div>
+                <div class="link-row">
+                    <div class="link-row-label">🎟️ Rifas</div>
+                    <div class="link-row-content">
+                        <input type="text" id="url-rifa" readonly>
+                        <button type="button" class="link-copy-btn" data-copy="url-rifa">Copiar</button>
+                    </div>
+                </div>
+                <div class="link-row">
+                    <div class="link-row-label">🏆 Premios</div>
+                    <div class="link-row-content">
+                        <input type="text" id="url-premios" readonly>
+                        <button type="button" class="link-copy-btn" data-copy="url-premios">Copiar</button>
+                    </div>
+                </div>
+                <div class="link-row">
+                    <div class="link-row-label">🔎 Consultar boleto</div>
+                    <div class="link-row-content">
+                        <input type="text" id="url-boleto" readonly>
+                        <button type="button" class="link-copy-btn" data-copy="url-boleto">Copiar</button>
+                    </div>
+                </div>
+                <div class="link-row">
+                    <div class="link-row-label">📜 Términos</div>
+                    <div class="link-row-content">
+                        <input type="text" id="url-terminos" readonly>
+                        <button type="button" class="link-copy-btn" data-copy="url-terminos">Copiar</button>
+                    </div>
+                </div>
+                <div class="link-row">
+                    <div class="link-row-label">💡 Motivo</div>
+                    <div class="link-row-content">
+                        <input type="text" id="url-motivo" readonly>
+                        <button type="button" class="link-copy-btn" data-copy="url-motivo">Copiar</button>
+                    </div>
+                </div>
+                <div class="link-row">
+                    <div class="link-row-label">🖼️ Cartel público</div>
+                    <div class="link-row-content">
+                        <input type="text" id="url-cartel" readonly>
+                        <button type="button" class="link-copy-btn" data-copy="url-cartel">Copiar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>📲</span><span>Compartir por WhatsApp</span></div></div>
+                <button type="button" class="btn-accion" id="btn-compartir-wa">📲 Compartir enlace de la rifa</button>
+            </div>
+
+            <div class="admin-block">
+                <div class="admin-block-header"><div class="admin-block-title"><span>👁️</span><span>Vista previa integrada</span></div></div>
+                <div class="admin-btn-row">
+                    <button type="button" class="btn-accion" id="btn-ver-landing">🏠 Ver Landing</button>
+                    <button type="button" class="btn-accion" id="btn-ver-rifa">🎟️ Ver Rifas</button>
+                </div>
+                <div class="admin-btn-row">
+                    <button type="button" class="btn-accion btn-blue" id="btn-ver-premios">🏆 Ver Premios</button>
+                    <button type="button" class="btn-accion btn-ghost" id="btn-ver-boleto">🔎 Ver Boleto</button>
+                </div>
+                <div class="admin-btn-row" style="margin-top:8px;">
+                    <button type="button" class="btn-accion btn-ghost" id="btn-ver-terminos">📜 Ver Términos</button>
+                    <button type="button" class="btn-accion btn-ok" id="btn-ver-cartel">🖼️ Ver Cartel</button>
+                </div>
+                <div class="admin-btn-row" style="margin-top:8px;">
+                    <button type="button" class="btn-accion" id="btn-abrir-cartel">↗️ Abrir Cartel en pestaña</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <button type="button" class="fab" id="fab-venta" title="Venta manual">➕</button>
+
+    <nav class="fixed-bottom" aria-label="Navegación principal">
+        <a href="index.html" class="nav-item"><span>🏠</span><span>Inicio</span></a>
+        <a href="rifas.html" class="nav-item"><span>🎟️</span><span>Rifas</span></a>
+        <a href="admin.html" class="nav-item active"><span>⚙️</span><span>Admin</span></a>
+    </nav>
+
+    <div class="iframe-overlay" id="iframe-overlay" hidden>
+        <div class="iframe-topbar">
+            <span class="iframe-title" id="iframe-titulo">Vista integrada</span>
+            <button type="button" class="iframe-close" id="btn-cerrar-iframe">✕ Cerrar</button>
+        </div>
+        <iframe class="iframe-view" id="iframe-view" src="about:blank" title="Vista integrada" loading="lazy"></iframe>
+    </div>
+
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/storage.js"></script>
+    <script src="assets/js/md.js"></script>
+    <script src="assets/js/theme.js"></script>
+    <script src="assets/js/bcv.js"></script>
+    <script src="assets/js/admin.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#fbbf24">
+    <meta name="description" content="Términos y condiciones de participación en la rifa.">
+
+    <title>Términos y Condiciones · <span data-theme="rifa">Cargando…</span></title>
+
+    <link rel="manifest" href="pwa/manifest.json">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9C%3C/text%3E%3C/svg%3E">
+
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/plantillas.css">
+</head>
+<body data-page="terminos">
+
+    <header class="fixed-header">
+        <div class="header-brand">
+            <div class="header-logo" data-theme="logo">📜</div>
+            <div class="header-title">Términos y Condiciones</div>
+        </div>
+        <span class="header-badge warn">Obligatorio</span>
+    </header>
+
+    <div class="progress-bar-container">
+        <div class="progress-bar-fill" style="width: 30%;"></div>
+    </div>
+
+    <main class="main-container">
+
+        <!-- Contenido .md -->
+        <div class="terms-box" id="terminos-box" aria-live="polite">
+            <p class="empty-msg">Cargando términos…</p>
+        </div>
+
+        <!-- Panel de aceptación -->
+        <section class="panel-control" id="panel-aceptar">
+            <h3>Tu decisión</h3>
+
+            <label class="check-row" for="chk-terminos">
+                <input type="checkbox" id="chk-terminos">
+                <span>
+                    He leído y acepto los <strong>términos y condiciones</strong> de
+                    participación en esta rifa.
+                </span>
+            </label>
+
+            <div id="aviso-aceptado" class="hidden" style="
+                background: var(--ok-soft);
+                border: 1px solid rgba(52,211,153,0.4);
+                border-radius: var(--radius-sm);
+                padding: 10px 14px;
+                color: var(--ok);
+                font-weight: 700;
+                font-size: 0.82rem;
+                line-height: 1.45;
+            ">
+                ✅ Ya aceptaste estos términos el <span id="fecha-aceptado">—</span>
+            </div>
+
+            <button type="button" class="btn-accion" id="btn-aceptar" disabled>
+                ✅ Aceptar y continuar
+            </button>
+
+            <button type="button" class="btn-accion btn-ghost" id="btn-cancelar">
+                ← Volver sin aceptar
+            </button>
+        </section>
+
+    </main>
+
+    <nav class="fixed-bottom" aria-label="Navegación principal">
+        <a href="index.html" class="nav-item">
+            <span>🏠</span><span>Inicio</span>
+        </a>
+        <a href="rifas.html" class="nav-item">
+            <span>🎟️</span><span>Rifas</span>
+        </a>
+        <a href="boleto.html" class="nav-item">
+            <span>🔎</span><span>Mi boleto</span>
+        </a>
+    </nav>
+
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/storage.js"></script>
+    <script src="assets/js/md.js"></script>
+    <script src="assets/js/theme.js"></script>
+
+    <script>
+    (function () {
+        'use strict';
+
+        var U     = window.UI;
+        var Store = window.Store;
+        var MD    = window.MD;
+        var Theme = window.Theme;
+
+        var el = {};
+
+        function init() {
+            cachearElementos();
+
+            try {
+                document.title = 'Términos y Condiciones · ' + Theme.nombreRifa();
+            } catch (e) { /* silent */ }
+
+            if (U.getParam('embed') === '1') {
+                activarModoEmbed();
+            }
+
+            cargarTerminos();
+            revisarAceptacionPrevia();
+            bindEventos();
+        }
+
+        function cachearElementos() {
+            el.terminosBox    = U.$('#terminos-box');
+            el.chk            = U.$('#chk-terminos');
+            el.btnAceptar     = U.$('#btn-aceptar');
+            el.btnCancelar    = U.$('#btn-cancelar');
+            el.avisoAceptado  = U.$('#aviso-aceptado');
+            el.fechaAceptado  = U.$('#fecha-aceptado');
+        }
+
+        function cargarTerminos() {
+            MD.cargarEnDOM('content/terminos.md', el.terminosBox, 'terminos')
+                .then(function (ok) {
+                    if (!ok) U.toast('No se pudieron cargar los términos.', 'danger');
+                })
+                .catch(function (err) {
+                    U.warn('Error cargando términos:', err);
+                    U.toast('Error al cargar el contenido.', 'danger');
+                });
+        }
+
+        function revisarAceptacionPrevia() {
+            var aceptado = Store.leerTerminosAceptados();
+            if (aceptado && aceptado.version) {
+                if (el.avisoAceptado) el.avisoAceptado.classList.remove('hidden');
+                if (el.fechaAceptado) el.fechaAceptado.textContent = U.fechaHumana(aceptado.fecha);
+                if (el.chk) el.chk.checked = true;
+                actualizarBoton();
+            }
+        }
+
+        function actualizarBoton() {
+            if (!el.btnAceptar || !el.chk) return;
+            el.btnAceptar.disabled = !el.chk.checked;
+        }
+
+        function aceptarTerminos() {
+            if (!el.chk || !el.chk.checked) {
+                U.toast('Marca la casilla para continuar.', 'warn');
+                return;
+            }
+
+            var cfg = Store.leerConfig();
+            var version = cfg.terminosVersion || 'v1';
+
+            Store.guardarTerminosAceptados(version);
+
+            try {
+                sessionStorage.setItem('rifa_recargar', '1');
+            } catch (e) { /* silent */ }
+
+            U.toast('✅ Términos aceptados. Redirigiendo…', 'ok', 1400);
+
+            var destino = U.getParam('return') || 'rifas.html';
+            setTimeout(function () {
+                location.href = destino;
+            }, 500);
+        }
+
+        function cancelar() {
+            var destino = U.getParam('return') || 'index.html';
+            location.href = destino;
+        }
+
+        function bindEventos() {
+            if (el.chk) el.chk.addEventListener('change', actualizarBoton);
+            if (el.btnAceptar) el.btnAceptar.addEventListener('click', aceptarTerminos);
+            if (el.btnCancelar) el.btnCancelar.addEventListener('click', cancelar);
+        }
+
+        function activarModoEmbed() {
+            document.body.classList.add('embed-mode');
+            if (U.$('.embed-close-btn')) return;
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'embed-close-btn';
+            btn.textContent = '← Volver al Panel';
+            btn.addEventListener('click', function () {
+                if (window.parent && window.parent !== window) {
+                    try {
+                        window.parent.postMessage({ tipo: 'cerrar-embed' }, '*');
+                        return;
+                    } catch (e) { /* fallback */ }
+                }
+                location.href = 'admin.html';
+            });
+            document.body.appendChild(btn);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
+    </script>
+
+</body>
+</html>

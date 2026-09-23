@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#fbbf24">
+    <meta name="description" content="Consulta y descarga tus boletos de la rifa.">
+
+    <title>Mi Boleto · Cargando…</title>
+
+    <link rel="manifest" href="pwa/manifest.json">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%AB%3C/text%3E%3C/svg%3E">
+
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/plantillas.css">
+
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+        defer
+    ></script>
+</head>
+<body data-page="boleto">
+
+    <header class="fixed-header">
+        <div class="header-brand">
+            <div class="header-logo" data-theme="logo">🎫</div>
+            <div class="header-title" id="header-titulo">Mi Boleto</div>
+        </div>
+        <span class="header-badge info" id="header-badge">Consulta</span>
+    </header>
+
+    <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progress-fill" style="width: 50%;"></div>
+    </div>
+
+    <main class="main-container">
+
+        <section id="panel-loader" class="panel-control" style="text-align: center;">
+            <p class="empty-msg">Cargando…</p>
+        </section>
+
+        <!-- PANEL · ALTA -->
+        <section id="panel-registro" class="hidden">
+            <div class="panel-control">
+                <h3>🎟️ Tus números</h3>
+                <div id="registro-nums-preview" style="
+                    display: flex; flex-wrap: wrap; gap: 6px; padding: 2px 0;
+                "></div>
+
+                <div class="info-line" style="padding: 8px 12px;">
+                    <span>💵 Total USD</span>
+                    <span id="registro-total" class="text-ok" style="font-weight: 800;">—</span>
+                </div>
+                <div class="info-line" id="fila-limite" style="display:none; padding: 8px 12px;">
+                    <span>📅 Pagar antes de</span>
+                    <span class="text-warn" id="registro-limite" style="font-weight: 800;">—</span>
+                </div>
+            </div>
+
+            <div class="panel-control">
+                <h3>👤 Tus datos</h3>
+
+                <div class="form-compact" id="registro-campos">
+                    <!-- Se llena dinámicamente según el modo de acceso -->
+                </div>
+
+                <button type="button" class="btn-accion" id="btn-confirmar" disabled style="margin-top: 4px;">
+                    ✅ Confirmar Reserva
+                </button>
+
+                <button type="button" class="btn-accion btn-ghost" id="btn-pagar-pre" style="
+                    border-color: var(--accent);
+                    color: var(--accent);
+                ">
+                    💳 Pagar ahora
+                </button>
+
+                <button type="button" class="btn-accion btn-ghost" id="btn-cancelar">
+                    ← Volver a la grilla
+                </button>
+            </div>
+        </section>
+
+        <!-- PANEL · LOGIN / CONSULTA -->
+        <section id="panel-auth" class="hidden">
+            <div class="banner">
+                <h1 id="auth-titulo">Consultar mis boletos</h1>
+                <p id="auth-subtitulo">Ingresa tu cédula para ver tus números y su estado.</p>
+            </div>
+
+            <div class="panel-control" id="auth-form">
+                <!-- Se llena dinámicamente según el modo -->
+            </div>
+
+            <section class="admin-section" id="auth-info">
+                <h3>🔐 Privacidad</h3>
+                <p class="admin-hint" id="auth-privacidad">
+                    Tus datos se usan solo para consultar tus boletos.
+                </p>
+            </section>
+        </section>
+
+        <!-- PANEL · BOLETOS -->
+        <section id="panel-boletos" class="hidden">
+            <div class="boleto-wrap" id="boleto-card-content"></div>
+        </section>
+
+        <!-- PANEL · VACÍO -->
+        <section id="panel-vacio" class="hidden">
+            <div class="banner">
+                <h1 id="vacio-titulo">Sin boletos registrados</h1>
+                <p id="vacio-subtitulo">No encontramos boletos con esos datos.</p>
+            </div>
+
+            <div class="panel-control">
+                <button type="button" class="btn-accion" id="btn-vacio-intentar">
+                    ← Intentar con otra búsqueda
+                </button>
+                <a href="rifas.html" class="btn-accion btn-ghost" style="text-decoration: none;">
+                    🎟️ Ir al panel de rifas
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <aside class="boleto-sticky" id="boleto-sticky" hidden>
+        <div class="boleto-sticky-inner" id="boleto-sticky-inner"></div>
+    </aside>
+
+    <nav class="fixed-bottom" aria-label="Navegación principal">
+
+        <a href="index.html" class="nav-item">
+            <span>🏠</span>
+            <span>Inicio</span>
+        </a>
+
+        <a href="premios.html" class="nav-item">
+            <span>🏆</span>
+            <span>Premios</span>
+        </a>
+
+        <a href="rifas.html" class="nav-item destacado">
+            <span class="nav-icono-destacado">🎟️</span>
+            <span class="nav-texto-destacado">Jugar</span>
+        </a>
+
+        <a href="boleto.html" class="nav-item active">
+            <span>🔎</span>
+            <span>Boleto</span>
+        </a>
+
+    </nav>
+
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/storage.js"></script>
+    <script src="assets/js/md.js"></script>
+    <script src="assets/js/theme.js"></script>
+    <script src="assets/js/bcv.js"></script>
+    <script src="assets/js/qr.js"></script>
+    <script src="assets/js/boleto.js"></script>
+
+    <style>
+        /* ============ FORM COMPACTO ============ */
+        .form-compact {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .form-compact .full { grid-column: 1 / -1; }
+
+        .input-group-sm {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .input-group-sm label {
+            font-size: 0.62rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+        }
+        .input-group-sm input {
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 11px;
+            color: var(--text);
+            font-size: 0.85rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .input-group-sm input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
+        .input-group-sm input::placeholder { color: var(--muted-2); }
+
+        .input-con-accion {
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+        }
+        .input-con-accion input { flex: 1; min-width: 0; }
+        .input-con-accion .btn-inline {
+            flex: 0 0 auto;
+            padding: 0 14px;
+            background: var(--accent-soft);
+            border: 1.5px solid var(--accent);
+            color: var(--accent);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 900;
+            cursor: pointer;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+        .input-con-accion .btn-inline:active {
+            transform: scale(0.94);
+            background: var(--accent);
+            color: var(--accent-text);
+        }
+
+        /* ============ AVISOS (privacidad + precargado) ============ */
+        .aviso-privacidad {
+            grid-column: 1 / -1;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 0.74rem;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+        .aviso-privacidad strong { font-weight: 900; }
+
+        .aviso-privacidad.aviso-privado {
+            background: var(--ok-soft);
+            border: 1px solid rgba(52, 211, 153, 0.35);
+            color: var(--ok);
+        }
+        .aviso-privacidad.aviso-publico {
+            background: var(--warn-soft);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            color: var(--warn);
+        }
+        .aviso-privacidad.aviso-precargado {
+            background: var(--sky-soft);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            color: var(--sky);
+        }
+
+        .aviso-modo {
+            grid-column: 1 / -1;
+            background: var(--sky-soft);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 0.74rem;
+            color: var(--sky);
+            line-height: 1.45;
+            font-weight: 600;
+        }
+        .aviso-modo strong { color: var(--sky); font-weight: 900; }
+
+        /* ============ BOLETO CARD ============ */
+        .boleto-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding-bottom: 130px;
+        }
+
+        .boleto-card {
+            background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+            border: 1.5px solid var(--accent);
+            border-radius: 14px;
+            padding: 12px;
+            width: 100%;
+            max-width: 340px;
+            box-shadow: 0 6px 20px -6px var(--accent-glow);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .boleto-card::before {
+            content: '';
+            position: absolute;
+            top: -50px; right: -50px;
+            width: 150px; height: 150px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .boleto-card.boleto-card-publico {
+            border-color: var(--sky);
+            box-shadow: 0 4px 14px -6px rgba(56, 189, 248, 0.35);
+        }
+        .boleto-card.boleto-card-publico::before { display: none; }
+
+        .bc-head { text-align: center; position: relative; padding-bottom: 6px; border-bottom: 1px dashed var(--border); }
+        .bc-brand { font-size: 0.82rem; font-weight: 900; color: var(--sky); letter-spacing: 1px; line-height: 1.1; }
+        .bc-sub { font-size: 0.58rem; color: var(--pink); font-weight: 700; margin-top: 2px; line-height: 1.1; }
+
+        .bc-num-row {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 10px; background: var(--bg); border: 1px solid var(--border);
+            border-radius: 10px; padding: 8px 12px; position: relative;
+        }
+        .bc-num-side { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+        .bc-num-lbl { font-size: 0.55rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 800; }
+        .bc-num {
+            font-size: 2rem; font-weight: 900; color: var(--accent); line-height: 1;
+            text-shadow: 0 0 18px var(--accent-glow); letter-spacing: 3px;
+            font-family: var(--font-heading); font-variant-numeric: tabular-nums;
+        }
+        .bc-estado {
+            display: inline-block; padding: 4px 10px; border-radius: 8px;
+            font-size: 0.6rem; font-weight: 900; text-transform: uppercase;
+            letter-spacing: 0.6px; white-space: nowrap; flex-shrink: 0;
+        }
+        .bc-estado.pagado { background: var(--ok-soft); color: var(--ok); border: 1px solid rgba(52, 211, 153, 0.45); }
+        .bc-estado.apartado { background: var(--warn-soft); color: var(--warn); border: 1px solid rgba(251, 191, 36, 0.45); }
+
+        .bc-info {
+            background: var(--bg); border: 1px solid var(--border-soft);
+            border-radius: 9px; padding: 8px 10px;
+            display: flex; flex-direction: column; gap: 4px; position: relative;
+        }
+        .bc-info-row { display: flex; justify-content: space-between; gap: 8px; font-size: 0.72rem; line-height: 1.3; }
+        .bc-info-row span:first-child {
+            color: var(--muted); font-size: 0.6rem; text-transform: uppercase;
+            font-weight: 800; letter-spacing: 0.3px; align-self: center; flex-shrink: 0;
+        }
+        .bc-info-row span:last-child {
+            color: var(--text); font-weight: 700; text-align: right;
+            word-break: break-word; font-size: 0.76rem;
+        }
+        .bc-info-row .mono { font-family: "SF Mono", "Roboto Mono", monospace; font-size: 0.66rem; letter-spacing: 0.2px; }
+
+        .bc-clave-box {
+            background: var(--accent-soft);
+            border: 1.5px solid var(--accent);
+            border-radius: 9px;
+            padding: 10px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+        .bc-clave-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+        .bc-clave-lbl {
+            font-size: 0.6rem; text-transform: uppercase;
+            letter-spacing: 0.6px; font-weight: 800; color: var(--muted);
+        }
+        .bc-clave-val {
+            font-family: "SF Mono", "Roboto Mono", monospace;
+            font-size: 1.25rem; font-weight: 900;
+            color: var(--accent); letter-spacing: 4px;
+        }
+        .bc-clave-copiar {
+            background: var(--accent); border: none; color: var(--accent-text);
+            padding: 8px 12px; border-radius: 7px; font-size: 0.72rem;
+            font-weight: 800; cursor: pointer; font-family: inherit;
+            flex-shrink: 0; transition: opacity 0.15s;
+        }
+        .bc-clave-copiar:active { opacity: 0.85; }
+
+        .bc-qr { display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; }
+        .bc-qr-svg {
+            width: 130px; height: 130px; background: #fff; padding: 5px;
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .bc-qr-svg svg { width: 100%; height: 100%; display: block; }
+        .bc-qr-fallback {
+            width: 130px; height: 130px; background: var(--bg);
+            border: 1px dashed var(--border); border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.68rem; color: var(--muted); text-align: center;
+            padding: 10px; line-height: 1.3;
+        }
+        .bc-qr-lbl { font-size: 0.56rem; color: var(--muted); letter-spacing: 0.2px; }
+
+        .bc-motivo {
+            display: flex; gap: 8px; align-items: flex-start;
+            background: var(--accent-soft); border: 1px solid rgba(251, 191, 36, 0.3);
+            border-left: 3px solid var(--accent); border-radius: 8px;
+            padding: 8px 10px; position: relative;
+        }
+        .bc-motivo-icon { font-size: 0.95rem; line-height: 1.1; flex-shrink: 0; }
+        .bc-motivo-text { font-size: 0.68rem; color: var(--text); line-height: 1.4; font-weight: 600; margin: 0; font-style: italic; }
+
+        .bc-aviso {
+            display: flex; gap: 8px; align-items: flex-start;
+            background: var(--warn-soft); border: 1px solid rgba(251, 191, 36, 0.4);
+            border-radius: 8px; padding: 8px 10px; position: relative;
+        }
+        .bc-aviso.vencido { background: var(--danger-soft); border-color: rgba(248, 113, 113, 0.4); }
+        .bc-aviso-icon { font-size: 0.95rem; line-height: 1.1; flex-shrink: 0; }
+        .bc-aviso-text { font-size: 0.68rem; color: var(--text); line-height: 1.4; font-weight: 700; margin: 0; }
+        .bc-aviso.vencido .bc-aviso-text { color: var(--danger); }
+
+        .bc-foot {
+            padding-top: 6px; border-top: 1px dashed var(--border);
+            text-align: center; font-size: 0.55rem; color: var(--danger);
+            font-weight: 800; letter-spacing: 0.3px; word-break: break-all; position: relative;
+        }
+
+        /* ============ LISTA PÚBLICA ============ */
+        .lista-publica-header {
+            font-size: 0.7rem; font-weight: 800; color: var(--muted);
+            text-transform: uppercase; letter-spacing: 0.6px;
+            padding: 4px 2px 8px; border-bottom: 1px solid var(--border);
+            margin-bottom: 8px;
+        }
+        .lista-publica {
+            display: flex; flex-direction: column; gap: 5px;
+            max-height: 360px; overflow-y: auto; padding-right: 4px;
+        }
+        .lista-publica::-webkit-scrollbar { width: 4px; }
+        .lista-publica::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+        .lista-publica-item {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--bg); border: 1px solid var(--border);
+            border-left: 3px solid var(--border);
+            border-radius: 8px; padding: 8px 12px; font-size: 0.8rem;
+        }
+        .lista-publica-item.pagado { border-left-color: var(--ok); }
+        .lista-publica-item.apartado { border-left-color: var(--warn); }
+        .lista-publica-num {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-width: 38px; padding: 3px 8px; border-radius: 6px;
+            font-size: 0.78rem; font-weight: 900;
+            font-variant-numeric: tabular-nums; flex-shrink: 0;
+        }
+        .lista-publica-num.pagado {
+            background: var(--ok-soft); color: var(--ok);
+            border: 1px solid rgba(52, 211, 153, 0.4);
+        }
+        .lista-publica-num.apartado {
+            background: var(--warn-soft); color: var(--warn);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+        }
+        .lista-publica-nombre {
+            flex: 1; min-width: 0; font-weight: 700; color: var(--text);
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .lista-publica-badge {
+            font-size: 0.65rem; font-weight: 900; padding: 2px 8px;
+            border-radius: 6px; flex-shrink: 0;
+        }
+        .lista-publica-badge.pagado { background: var(--ok-soft); color: var(--ok); }
+        .lista-publica-badge.apartado { background: var(--warn-soft); color: var(--warn); }
+
+        /* ============ TARJETAS PÚBLICAS (modo público) ============ */
+        .publicos-cards-header {
+            font-size: 0.7rem; font-weight: 800; color: var(--muted);
+            text-transform: uppercase; letter-spacing: 0.6px;
+            padding: 4px 2px 10px; border-bottom: 1px solid var(--border);
+            margin-bottom: 12px;
+        }
+        .publicos-cards {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 4px 2px 8px;
+        }
+        .publicos-cards::-webkit-scrollbar { width: 4px; }
+        .publicos-cards::-webkit-scrollbar-thumb {
+            background: var(--border); border-radius: 2px;
+        }
+        .publicos-cards .boleto-card {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        /* ============ SECCIÓN DE BOLETOS PÚBLICOS ============ */
+        .publicos-section { margin-top: 10px; }
+
+        .publicos-toggle {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 800;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.15s;
+        }
+        .publicos-toggle:active {
+            border-color: var(--accent);
+            transform: scale(0.99);
+        }
+        .publicos-toggle-arrow {
+            color: var(--accent);
+            font-size: 1rem;
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+
+        .publicos-container {
+            margin-top: 10px;
+            animation: publicosIn 0.22s ease-out;
+        }
+        .publicos-container.hidden { display: none; }
+
+        @keyframes publicosIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============ STICKY BAR ============ */
+        .boleto-sticky {
+            position: fixed;
+            left: 8px; right: 8px;
+            bottom: calc(var(--bottom-height) + 8px);
+            z-index: 900;
+            background: var(--surface);
+            border: 1.5px solid var(--accent);
+            border-radius: 14px;
+            padding: 10px;
+            box-shadow:
+                0 -6px 20px -6px var(--accent-glow),
+                0 8px 20px rgba(0, 0, 0, 0.4);
+            animation: stickyIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .boleto-sticky[hidden] { display: none; }
+
+        @keyframes stickyIn {
+            from { transform: translateY(80px); opacity: 0; }
+            to   { transform: translateY(0); opacity: 1; }
+        }
+
+        .boleto-sticky-inner { display: flex; flex-direction: column; gap: 8px; }
+
+        .sticky-aviso {
+            background: var(--warn-soft);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            border-radius: 10px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: var(--warn);
+            line-height: 1.3;
+        }
+        .sticky-aviso.vencido {
+            background: var(--danger-soft);
+            border-color: rgba(248, 113, 113, 0.4);
+            color: var(--danger);
+        }
+        .sticky-aviso-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+        .sticky-row { display: flex; gap: 8px; }
+        .sticky-row .btn-accion {
+            padding: 13px 10px;
+            font-size: 0.82rem;
+            flex: 1;
+            min-width: 0;
+        }
+        .sticky-row.full .btn-accion { flex-basis: 100%; }
+
+        /* ============ MODAL DE MÉTODOS DE PAGO ============ */
+        .pago-total-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            display: flex; flex-direction: column; gap: 4px;
+            text-align: center;
+        }
+        .pago-total-label {
+            font-size: 0.65rem; color: var(--muted);
+            text-transform: uppercase; letter-spacing: 0.8px;
+            font-weight: 800; margin-bottom: 2px;
+        }
+        .pago-total-valor {
+            font-size: 1.5rem; font-weight: 900; color: var(--accent);
+            font-variant-numeric: tabular-nums; letter-spacing: 0.5px; line-height: 1;
+        }
+        .pago-total-secundario {
+            font-size: 0.74rem; color: var(--muted);
+            font-weight: 700; letter-spacing: 0.2px;
+            line-height: 1.35; font-variant-numeric: tabular-nums;
+        }
+        .pago-total-secundario:first-of-type { margin-top: 2px; }
+
+        .pago-metodo {
+            display: flex; align-items: center; gap: 12px;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+            cursor: pointer;
+            font-family: inherit;
+            color: var(--text);
+            text-align: left;
+            width: 100%;
+            transition: all 0.18s ease;
+        }
+        .pago-metodo:active { transform: scale(0.98); border-color: var(--accent); }
+        .pago-metodo-icon {
+            font-size: 1.6rem; line-height: 1; flex-shrink: 0;
+            width: 42px; height: 42px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--accent-soft); border-radius: 10px;
+        }
+        .pago-metodo-info { flex: 1; min-width: 0; }
+        .pago-metodo-title { font-size: 0.9rem; font-weight: 800; margin-bottom: 2px; }
+        .pago-metodo-desc { font-size: 0.72rem; color: var(--muted); line-height: 1.3; }
+        .pago-metodo-arrow { color: var(--accent); font-size: 1.2rem; font-weight: 900; flex-shrink: 0; }
+
+        /* ============ SUB-MODAL DE PAGO ============ */
+        .pago-detalle-lista {
+            display: flex; flex-direction: column; gap: 8px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 6px;
+        }
+        .pago-detalle-fila {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            transition: border-color 0.15s;
+        }
+        .pago-detalle-fila:active { border-color: var(--accent); }
+        .pago-detalle-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+        .pago-detalle-label {
+            font-size: 0.62rem; color: var(--muted);
+            text-transform: uppercase; letter-spacing: 0.4px; font-weight: 800;
+        }
+        .pago-detalle-valor { font-size: 0.95rem; font-weight: 700; word-break: break-word; }
+        .pago-detalle-copiar {
+            width: 42px; height: 42px; flex-shrink: 0;
+            border-radius: 10px;
+            background: var(--accent-soft);
+            border: 1.5px solid var(--accent);
+            color: var(--accent);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-family: inherit;
+            transition: all 0.15s;
+        }
+        .pago-detalle-copiar:active {
+            transform: scale(0.92);
+            background: var(--accent);
+            color: var(--accent-text);
+        }
+        .pago-detalle-texto {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 0.88rem;
+            line-height: 1.55;
+            color: var(--text);
+            word-break: break-word;
+            white-space: normal;
+        }
+        .pago-detalle-nota {
+            font-size: 0.72rem; color: var(--muted);
+            line-height: 1.45; text-align: center;
+            padding: 4px 8px; font-style: italic;
+        }
+
+        /* ============ MODAL DE AVISAR ============ */
+        .avisar-opcion {
+            display: flex; align-items: center; gap: 12px;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            cursor: pointer;
+            font-family: inherit;
+            color: var(--text);
+            text-align: left;
+            width: 100%;
+            transition: all 0.18s ease;
+        }
+        .avisar-opcion:active { transform: scale(0.98); border-color: var(--accent); }
+        .avisar-opcion-icon { font-size: 1.6rem; line-height: 1; flex-shrink: 0; }
+        .avisar-opcion-info { flex: 1; min-width: 0; }
+        .avisar-opcion-title { font-size: 0.9rem; font-weight: 800; margin-bottom: 2px; }
+        .avisar-opcion-desc { font-size: 0.72rem; color: var(--muted); line-height: 1.3; }
+
+        /* ============ PLANTILLAS ============ */
+        body.plantilla-clasico .boleto-card { background: #ffffff; border-width: 2px; }
+        body.plantilla-clasico .bc-num-row,
+        body.plantilla-clasico .bc-info { background: #fef9e7; }
+        body.plantilla-clasico .bc-num { text-shadow: none; }
+        body.plantilla-clasico .bc-brand { color: #1e40af; }
+        body.plantilla-clasico .bc-sub { color: var(--accent); }
+        body.plantilla-clasico .bc-motivo { background: #fef3c7; border-left-color: var(--accent); }
+        body.plantilla-clasico .boleto-sticky { background: #ffffff; border-width: 2px; }
+        body.plantilla-clasico .input-group-sm input { background: #ffffff; }
+        body.plantilla-clasico .pago-metodo,
+        body.plantilla-clasico .avisar-opcion,
+        body.plantilla-clasico .pago-detalle-fila { background: #fef9e7; }
+        body.plantilla-clasico .pago-detalle-lista { background: #fef3c7; }
+
+        body.plantilla-minimal .boleto-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        }
+        body.plantilla-minimal .boleto-card::before { display: none; }
+        body.plantilla-minimal .bc-brand { color: var(--text); letter-spacing: 0; font-weight: 700; }
+        body.plantilla-minimal .bc-sub { color: var(--muted); }
+        body.plantilla-minimal .bc-num { color: var(--text); text-shadow: none; letter-spacing: 2px; }
+        body.plantilla-minimal .bc-motivo {
+            background: var(--surface);
+            border-left-color: var(--accent);
+            border-color: var(--border);
+        }
+        body.plantilla-minimal .boleto-sticky {
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+        }
+
+        body.plantilla-neon .boleto-card {
+            box-shadow: 0 0 24px var(--accent-glow), 0 8px 20px rgba(0, 0, 0, 0.6);
+        }
+        body.plantilla-neon .bc-brand { text-transform: uppercase; letter-spacing: 1.5px; }
+        body.plantilla-neon .bc-num { letter-spacing: 4px; }
+        body.plantilla-neon .boleto-sticky {
+            box-shadow: 0 0 24px var(--accent-glow), 0 8px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        @media (max-height: 700px) {
+            .bc-qr-svg { width: 110px; height: 110px; }
+            .bc-qr-fallback { width: 110px; height: 110px; }
+            .bc-num { font-size: 1.75rem; }
+        }
+    </style>
+
+</body>
+</html>

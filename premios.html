@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#fbbf24">
+    <meta name="description" content="Premios del sorteo.">
+
+    <title>Premios del Sorteo · <span data-theme="rifa">Cargando…</span></title>
+
+    <link rel="manifest" href="pwa/manifest.json">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%86%3C/text%3E%3C/svg%3E">
+
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/plantillas.css">
+</head>
+<body data-page="premios">
+
+    <!-- HEADER -->
+    <header class="fixed-header">
+        <div class="header-brand">
+            <div class="header-logo" data-theme="logo">🏆</div>
+            <div class="header-title">Premios del Sorteo</div>
+        </div>
+        <span class="header-badge warn" id="badge-total-premios">Incentivos</span>
+    </header>
+
+    <div class="progress-bar-container">
+        <div class="progress-bar-fill" style="width: 65%;"></div>
+    </div>
+
+    <main class="main-container">
+
+        <!-- Lista de premios -->
+        <div class="premios-grid" id="premios-grid">
+            <p class="empty-msg">Cargando premios…</p>
+        </div>
+
+        <!-- Info compacta en una línea -->
+        <section class="premios-info-line">
+            <span>🎲 <strong data-theme="loteria">Chance A</strong></span>
+            <span>💰 <strong data-theme="monto">$5</strong></span>
+            <span>📅 <span data-theme="fecha-sorteo-humana">Por anunciar</span></span>
+        </section>
+
+        <!-- CTA -->
+        <section class="motivo-cta">
+            <h3>¿Listo para participar?</h3>
+            <p>Elige tus números de la suerte y asegura tu participación.</p>
+            <a href="rifas.html" class="btn-accion" style="text-decoration: none;">
+                🎟️ Quiero jugar un número
+            </a>
+            <a href="motivo.html" class="btn-accion btn-ghost" style="text-decoration: none;">
+                💡 Conoce el motivo
+            </a>
+        </section>
+
+        <p class="motivo-firma">Los premios son entregados por el organizador</p>
+
+    </main>
+
+    <!-- ============================================================
+         NAV INFERIOR · JUGAR DESTACADO (late fuerte porque NO estás aquí)
+         ============================================================ -->
+    <nav class="fixed-bottom" aria-label="Navegación principal">
+
+        <a href="index.html" class="nav-item">
+            <span>🏠</span>
+            <span>Inicio</span>
+        </a>
+
+        <a href="premios.html" class="nav-item active">
+            <span>🏆</span>
+            <span>Premios</span>
+        </a>
+
+        <a href="rifas.html" class="nav-item destacado">
+            <span class="nav-icono-destacado">🎟️</span>
+            <span class="nav-texto-destacado">Jugar</span>
+        </a>
+
+        <a href="boleto.html" class="nav-item">
+            <span>🔎</span>
+            <span>Boleto</span>
+        </a>
+
+    </nav>
+
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/storage.js"></script>
+    <script src="assets/js/theme.js"></script>
+
+    <script>
+    (function () {
+        'use strict';
+
+        var U     = window.UI;
+        var Store = window.Store;
+        var Theme = window.Theme;
+
+        var MEDALLAS = { 1: '🥇', 2: '🥈', 3: '🥉' };
+        var ETIQUETAS = { 1: 'Primer lugar', 2: 'Segundo lugar', 3: 'Tercer lugar' };
+
+        function init() {
+            try {
+                document.title = 'Premios del Sorteo · ' + Theme.nombreRifa();
+            } catch (e) { /* silent */ }
+
+            if (U.getParam('embed') === '1') activarModoEmbed();
+            renderizarPremios();
+        }
+
+        function renderizarPremios() {
+            var grid = U.$('#premios-grid');
+            if (!grid) return;
+
+            var cfg = Store.leerConfig();
+            var premios = (cfg && Array.isArray(cfg.premios)) ? cfg.premios : [];
+
+            var badge = U.$('#badge-total-premios');
+            if (badge) {
+                badge.textContent = premios.length === 1
+                    ? '1 premio'
+                    : premios.length + ' premios';
+            }
+
+            if (premios.length === 0) {
+                grid.innerHTML = [
+                    '<div class="panel-control" style="text-align:center;">',
+                        '<p class="empty-msg">',
+                            '🎁 Aún no hay premios configurados.<br>',
+                            'El organizador los añadirá pronto.',
+                        '</p>',
+                    '</div>'
+                ].join('');
+                return;
+            }
+
+            var ordenados = premios.slice().sort(function (a, b) {
+                return (a.puesto || 99) - (b.puesto || 99);
+            });
+
+            grid.innerHTML = '';
+            ordenados.forEach(function (premio) {
+                grid.appendChild(construirCardPremio(premio));
+            });
+        }
+
+        function construirCardPremio(premio) {
+            var puesto = parseInt(premio.puesto, 10) || 0;
+
+            var card = document.createElement('article');
+            card.className = 'premio-card';
+
+            var iconEl = document.createElement('div');
+            iconEl.className = 'premio-icon';
+
+            if (premio.imagen && String(premio.imagen).indexOf('data:image') === 0) {
+                var img = document.createElement('img');
+                img.src = premio.imagen;
+                img.alt = premio.titulo || 'Premio';
+                img.loading = 'lazy';
+                img.onerror = function () {
+                    iconEl.innerHTML = U.escapeHtml(MEDALLAS[puesto] || '🏆');
+                };
+                iconEl.appendChild(img);
+            } else {
+                iconEl.textContent = MEDALLAS[puesto] || '🏆';
+            }
+
+            var details = document.createElement('div');
+            details.className = 'premio-details';
+
+            var titulo = document.createElement('h3');
+            titulo.textContent = premio.titulo || 'Premio';
+            details.appendChild(titulo);
+
+            if (premio.descripcion) {
+                var desc = document.createElement('p');
+                desc.textContent = premio.descripcion;
+                details.appendChild(desc);
+            }
+
+            var tag = document.createElement('span');
+            tag.className = 'premio-tag';
+            tag.textContent = ETIQUETAS[puesto] ||
+                (puesto > 0 ? 'Puesto ' + puesto : 'Premio');
+            details.appendChild(tag);
+
+            card.appendChild(iconEl);
+            card.appendChild(details);
+
+            return card;
+        }
+
+        function activarModoEmbed() {
+            document.body.classList.add('embed-mode');
+            if (U.$('.embed-close-btn')) return;
+
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'embed-close-btn';
+            btn.textContent = '← Volver al Panel';
+            btn.addEventListener('click', function () {
+                if (window.parent && window.parent !== window) {
+                    try {
+                        window.parent.postMessage({ tipo: 'cerrar-embed' }, '*');
+                        return;
+                    } catch (e) { /* fallback */ }
+                }
+                location.href = 'admin.html';
+            });
+            document.body.appendChild(btn);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+    })();
+    </script>
+
+    <style>
+        /* Info compacta en una línea (reemplaza el banner redundante) */
+        .premios-info-line {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 18px;
+            justify-content: center;
+            align-items: center;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            font-size: 0.78rem;
+            color: var(--muted);
+            font-weight: 600;
+        }
+        .premios-info-line strong {
+            color: var(--accent);
+            font-weight: 800;
+        }
+        .premios-info-line span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        /* Adaptaciones por plantilla */
+        body.plantilla-clasico .premios-info-line {
+            background: #ffffff;
+            border-width: 2px;
+        }
+        body.plantilla-minimal .premios-info-line {
+            background: var(--surface);
+            box-shadow: none;
+        }
+    </style>
+
+</body>
+</html>
