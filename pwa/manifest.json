@@ -1,0 +1,93 @@
+{
+  "name": "Motor de Rifas",
+  "short_name": "Rifas",
+  "description": "Sistema local y configurable para organizar rifas de 100 números. Sin servidor, sin rastreo, 100% offline.",
+
+  "id": "/",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "portrait",
+  "theme_color": "#fbbf24",
+  "background_color": "#0f172a",
+
+  "lang": "es",
+  "dir": "ltr",
+
+  "categories": ["utilities", "productivity", "entertainment"],
+  "prefer_related_applications": false,
+
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjM2IiBmaWxsPSIjMGYxNzJhIi8+PHJlY3QgeD0iMTIiIHk9IjEyIiB3aWR0aD0iMTY4IiBoZWlnaHQ9IjE2OCIgcng9IjI4IiBmaWxsPSIjMWUyOTNiIiBzdHJva2U9IiNmYmJmMjQiIHN0cm9rZS13aWR0aD0iMyIvPjx0ZXh0IHg9Ijk2IiB5PSIxMjAiIGZvbnQtc2l6ZT0iOTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPvCfjp/vuI88L3RleHQ+PC9zdmc+",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9Ijk2IiBmaWxsPSIjMGYxNzJhIi8+PHJlY3QgeD0iMzIiIHk9IjMyIiB3aWR0aD0iNDQ4IiBoZWlnaHQ9IjQ0OCIgcng9Ijc2IiBmaWxsPSIjMWUyOTNiIiBzdHJva2U9IiNmYmJmMjQiIHN0cm9rZS13aWR0aD0iOCIvPjx0ZXh0IHg9IjI1NiIgeT0iMzQwIiBmb250LXNpemU9IjI2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+On++4jzwvdGV4dD48L3N2Zz4=",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iIzBmMTcyYSIvPjx0ZXh0IHg9IjI1NiIgeT0iMzYwIiBmb250LXNpemU9IjI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+On++4jzwvdGV4dD48L3N2Zz4=",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+
+  "shortcuts": [
+    {
+      "name": "Panel de Rifas",
+      "short_name": "Rifas",
+      "description": "Elegir números de la rifa",
+      "url": "/rifas.html",
+      "icons": [
+        {
+          "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NiA5NiI+PHJlY3Qgd2lkdGg9Ijk2IiBoZWlnaHQ9Ijk2IiByeD0iMTgiIGZpbGw9IiNmYmJmMjQiLz48dGV4dCB4PSI0OCIgeT0iNjYiIGZvbnQtc2l6ZT0iNDgiIHRleHQtYW5jaG9yPSJtaWRkbGUiPvCfjp88L3RleHQ+PC9zdmc+",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Mi Boleto",
+      "short_name": "Boleto",
+      "description": "Consultar mis números",
+      "url": "/boleto.html",
+      "icons": [
+        {
+          "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NiA5NiI+PHJlY3Qgd2lkdGg9Ijk2IiBoZWlnaHQ9Ijk2IiByeD0iMTgiIGZpbGw9IiMzOGJkZjgiLz48dGV4dCB4PSI0OCIgeT0iNjYiIGZvbnQtc2l6ZT0iNDgiIHRleHQtYW5jaG9yPSJtaWRkbGUiPvCfjqs8L3RleHQ+PC9zdmc+",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "short_name": "Admin",
+      "description": "Panel de administración",
+      "url": "/admin.html",
+      "icons": [
+        {
+          "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NiA5NiI+PHJlY3Qgd2lkdGg9Ijk2IiBoZWlnaHQ9Ijk2IiByeD0iMTgiIGZpbGw9IiMxZTI5M2IiLz48dGV4dCB4PSI0OCIgeT0iNjYiIGZvbnQtc2l6ZT0iNDgiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuKame+4jzwvdGV4dD48L3N2Zz4=",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NDAgNzIwIj48cmVjdCB3aWR0aD0iNTQwIiBoZWlnaHQ9IjcyMCIgZmlsbD0iIzBmMTcyYSIvPjxyZWN0IHg9IjQwIiB5PSI0MCIgd2lkdGg9IjQ2MCIgaGVpZ2h0PSI4MCIgcng9IjE2IiBmaWxsPSIjMWUyOTNiIiBzdHJva2U9IiNmYmJmMjQiIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjI3MCIgeT0iOTIiIGZpbGw9IiNmYmJmMjQiIGZvbnQtc2l6ZT0iMzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIj5Nb3RvciBkZSBSaWZhczwvdGV4dD48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg0MCwxNjApIj48ZyBmaWxsPSIjMWUyOTNiIiBzdHJva2U9IiMzMzQxNTUiIHN0cm9rZS13aWR0aD0iMSI+PHJlY3Qgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiByeD0iNiIvPjxyZWN0IHg9IjYwIiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHJ4PSI2Ii8+PHJlY3QgeD0iMTIwIiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHJ4PSI2Ii8+PHJlY3QgeD0iMTgwIiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHJ4PSI2Ii8+PHJlY3QgeD0iMjQwIiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHJ4PSI2Ii8+PHJlY3QgeD0iMzAwIiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHJ4PSI2Ii8+PHJlY3QgeD0iMzYwIiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHJ4PSI2Ii8+PHJlY3QgeT0iNjAiIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgcng9IjYiLz48cmVjdCB4PSI2MCIgeT0iNjAiIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgcng9IjYiIGZpbGw9IiNmYmJmMjQiLz48cmVjdCB4PSIxMjAiIHk9IjYwIiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHJ4PSI2Ii8+PHJlY3QgeD0iMTgwIiB5PSI2MCIgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiByeD0iNiIvPjxyZWN0IHg9IjI0MCIgeT0iNjAiIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgcng9IjYiIGZpbGw9IiMzNGQzOTkiLz48cmVjdCB4PSIzMDAiIHk9IjYwIiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHJ4PSI2Ii8+PHJlY3QgeD0iMzYwIiB5PSI2MCIgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiByeD0iNiIvPjwvZz48L2c+PHRleHQgeD0iMjcwIiB5PSI2NjAiIGZpbGw9IiM5NGEzYjgiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkVsaWdlIHR1cyAxMDAgbjp1bWVyb3M8L3RleHQ+PC9zdmc+",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow",
+      "label": "Panel de rifas con 100 números"
+    }
+  ]
+}
